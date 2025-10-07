@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Envío de Ofertas - Frío Natural</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* VARIABLES DE COLOR - Tema Rosa Heladería */
+        :root {
+            --color-primary: #ff69b4;
+            --color-secondary: #ff85a1;
+            --color-accent: #ffd166;
+            --color-background: #ffffff;
+            --color-text-dark: #333333;
+            --color-text-light: #ffffff;
+            --color-success: #4CAF50;
+            --color-warning: #ff9800;
+            --color-error: #f44336;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #ffccd5 0%, #c9e9ff 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* BOTÓN DE REGRESO */
+        .back-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 100;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .back-button:hover {
+            background: white;
+            transform: translateX(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+        }
+        
+        .back-button i {
+            color: var(--color-primary);
+            font-size: 18px;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            width: 90%;
+            max-width: 500px;
+            margin-top: 60px;
+        }
+
+        .panel {
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .panel:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Bloque principal del título */
+        .oferta-header {
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+            color: var(--color-text-light);
+            border-left: 5px solid var(--color-accent);
+            text-align: center;
+        }
+
+        .oferta-header h2 {
+            margin: 0;
+            font-size: 1.8em;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+        }
+
+        .subtitulo-oferta {
+            margin: 10px 0 0 0;
+            opacity: 0.9;
+            font-size: 1em;
+        }
+
+        /* Bloque de Contenido de la Promoción */
+        .oferta-contenido {
+            background: var(--color-background);
+            border: 2px solid var(--color-secondary);
+            padding: 25px;
+        }
+        
+        .oferta-contenido h3 {
+            color: var(--color-primary);
+            margin: 0 0 20px 0;
+            font-size: 1.3em;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .lista-ofertas {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .item-oferta {
+            padding: 15px;
+            margin-bottom: 12px;
+            background: rgba(255, 105, 180, 0.05);
+            border-radius: 10px;
+            border-left: 4px solid var(--color-primary);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .item-oferta:hover {
+            background: rgba(255, 105, 180, 0.1);
+            transform: translateX(5px);
+        }
+
+        .item-oferta:last-child {
+            margin-bottom: 0;
+        }
+
+        .icono-oferta {
+            font-size: 1.5em;
+            color: var(--color-primary);
+            width: 30px;
+            text-align: center;
+        }
+
+        .texto-oferta {
+            flex: 1;
+            color: var(--color-text-dark);
+            font-size: 1.1em;
+            font-weight: 500;
+        }
+
+        .badge-oferta {
+            background: var(--color-accent);
+            color: var(--color-text-dark);
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 0.9em;
+            font-weight: bold;
+        }
+
+        /* Bloque de Programador de Envío */
+        .oferta-programador {
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+            padding: 25px;
+            text-align: center;
+            color: var(--color-text-light);
+        }
+
+        .info-programacion {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .fecha-envio {
+            font-size: 1.3em;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 12px 20px;
+            border-radius: 10px;
+        }
+
+        .contador-clientes {
+            font-size: 1.1em;
+            opacity: 0.9;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .botones-programacion {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+            width: 100%;
+        }
+
+        .botones-programacion button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-programar {
+            background: var(--color-background);
+            color: var(--color-primary);
+        }
+
+        .btn-programar:hover {
+            background: var(--color-accent);
+            transform: translateY(-2px);
+        }
+
+        .btn-enviar-ahora {
+            background: var(--color-accent);
+            color: var(--color-text-dark);
+        }
+
+        .btn-enviar-ahora:hover {
+            background: #ffc145;
+            transform: translateY(-2px);
+        }
+
+        /* Log de Envío */
+        .log-envio {
+            background: var(--color-accent);
+            color: var(--color-text-dark);
+            border: 2px solid #ffc145;
+            font-size: 0.9em;
+            padding: 25px;
+            border-radius: 15px;
+        }
+
+        .log-envio h4 {
+            margin-top: 0;
+            color: var(--color-primary);
+            font-size: 1.2em;
+            text-align: center;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .entrada-envio {
+            margin-bottom: 12px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid rgba(255, 105, 180, 0.3);
+        }
+
+        .entrada-envio:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        .fecha-envio-log {
+            color: var(--color-primary);
+            font-weight: bold;
+            margin-right: 8px;
+        }
+
+        .envio-exitoso {
+            color: var(--color-success);
+            font-weight: 500;
+        }
+
+        .envio-error {
+            color: var(--color-error);
+            font-weight: 500;
+        }
+
+        /* Mensaje de Éxito */
+        .oferta-exitosa {
+            background: rgba(76, 175, 80, 0.1);
+            color: #2e7d32;
+            border: 2px solid var(--color-success);
+            font-weight: bold;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        /* Mensaje de Error */
+        .error-oferta {
+            background: rgba(244, 67, 54, 0.1);
+            color: #c62828;
+            border: 2px solid var(--color-error);
+            font-weight: bold;
+            text-align: center;
+            padding: 20px;
+        }
+
+        /* Estados dinámicos */
+        .mensaje-oculto {
+            display: none;
+        }
+
+        .animacion-oferta {
+            animation: ofertaPulse 2s ease-in-out;
+        }
+
+        @keyframes ofertaPulse {
+            0% { transform: scale(0.95); opacity: 0.7; }
+            50% { transform: scale(1.02); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* Selector de fecha */
+        .selector-fecha {
+            margin-top: 15px;
+            width: 100%;
+        }
+
+        .selector-fecha input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.2);
+            color: var(--color-text-light);
+            font-size: 1em;
+            text-align: center;
+        }
+
+        .selector-fecha input:focus {
+            outline: none;
+            border-color: var(--color-accent);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                width: 95%;
+            }
+            
+            .back-button {
+                top: 15px;
+                left: 15px;
+                width: 40px;
+                height: 40px;
+            }
+            
+            .panel {
+                padding: 20px;
+            }
+            
+            .botones-programacion {
+                flex-direction: column;
+            }
+            
+            .fecha-envio {
+                font-size: 1.1em;
+                flex-direction: column;
+                gap: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <button class="back-button" id="backButton">
+        <i class="fas fa-arrow-left"></i>
+    </button>
+
+    <div class="container">
+
+        <div class="panel oferta-header">
+            <h2>📧 Envío de Ofertas Masivas</h2>
+            <p class="subtitulo-oferta">Programa y envía promociones a todos tus clientes</p>
+        </div>
+
+        <div class="panel oferta-contenido">
+            <h3><i class="fas fa-bullhorn"></i> Campaña de Otoño 2025</h3>
+            <ul class="lista-ofertas">
+                <li class="item-oferta">
+                    <span class="icono-oferta">🍦</span>
+                    <span class="texto-oferta">25% de descuento en helados artesanales</span>
+                    <span class="badge-oferta">NUEVO</span>
+                </li>
+                <li class="item-oferta">
+                    <span class="icono-oferta">🎁</span>
+                    <span class="texto-oferta">2x1 en sundae los fines de semana</span>
+                    <span class="badge-oferta">POPULAR</span>
+                </li>
+                <li class="item-oferta">
+                    <span class="icono-oferta">🚚</span>
+                    <span class="texto-oferta">Envío gratis en compras sobre $15.000</span>
+                    <span class="badge-oferta">ESPECIAL</span>
+                </li>
+                <li class="item-oferta">
+                    <span class="icono-oferta">⭐</span>
+                    <span class="texto-oferta">Doble puntos en compras de temporada</span>
+                    <span class="badge-oferta">EXCLUSIVO</span>
+                </li>
+            </ul>
+        </div>
+
+        <div class="panel oferta-programador">
+            <div class="info-programacion">
+                <div class="fecha-envio">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span>Próximo envío programado: <strong id="fechaProgramada">2025-10-05</strong></span>
+                </div>
+                <div class="contador-clientes">
+                    <i class="fas fa-users"></i>
+                    <span>Alcance: <strong>2,548 clientes</strong></span>
+                </div>
+                
+                <div class="selector-fecha">
+                    <input type="date" id="selectorFecha" min="2025-10-01" value="2025-10-05">
+                </div>
+                
+                <div class="botones-programacion">
+                    <button class="btn-programar" id="btnProgramar">
+                        <i class="fas fa-clock"></i> Programar Envío
+                    </button>
+                    <button class="btn-enviar-ahora" id="btnEnviarAhora">
+                        <i class="fas fa-paper-plane"></i> Enviar Ahora
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="panel oferta-exitosa mensaje-oculto" id="ofertaExitosa">
+            <i class="fas fa-check-circle"></i>
+            <p style="margin: 10px 0 5px 0;">¡Campaña enviada exitosamente!</p>
+            <p style="margin: 0; font-size: 0.9em; opacity: 0.8;" id="detalleEnvio"></p>
+        </div>
+
+        <div class="panel error-oferta mensaje-oculto" id="errorOferta">
+            <i class="fas fa-exclamation-triangle"></i>
+            <p style="margin: 10px 0 5px 0;">Error al enviar la campaña</p>
+            <p style="margin: 0; font-size: 0.9em; opacity: 0.8;">Los clientes no recibieron el email</p>
+        </div>
+        
+        <div class="panel log-envio">
+            <h4><i class="fas fa-history"></i> Historial de Envíos</h4>
+            <div class="entrada-envio">
+                <span class="fecha-envio-log">09:00</span>
+                <span class="envio-exitoso">Campaña enviada: Ofertas de Otoño 2025 a 2,548 clientes</span>
+            </div>
+            <div class="entrada-envio">
+                <span class="fecha-envio-log">08:45</span>
+                <span class="envio-exitoso">Programación confirmada: Envío para 2025-10-05</span>
+            </div>
+            <div class="entrada-envio">
+                <span class="fecha-envio-log">08:30</span>
+                <span class="envio-error">Error en servicio de correo, email no enviado</span>
+            </div>
+            <div class="entrada-envio">
+                <span class="fecha-envio-log">08:15</span>
+                <span class="envio-exitoso">Campaña enviada: Promoción Verano 2025 a 2,312 clientes</span>
+            </div>
+            <div class="entrada-envio">
+                <span class="fecha-envio-log">08:00</span>
+                <span class="envio-exitoso">Lista de clientes actualizada: +236 nuevos suscriptores</span>
+            </div>
+        </div>
+        
+    </div>
+
+    <script>
+        // Función para el botón de regreso
+        document.getElementById('backButton').addEventListener('click', function() {
+            window.location.href = 'dashboard.html';
+        });
+
+        // Elementos del DOM
+        const btnProgramar = document.getElementById('btnProgramar');
+        const btnEnviarAhora = document.getElementById('btnEnviarAhora');
+        const ofertaExitosa = document.getElementById('ofertaExitosa');
+        const errorOferta = document.getElementById('errorOferta');
+        const fechaProgramada = document.getElementById('fechaProgramada');
+        const selectorFecha = document.getElementById('selectorFecha');
+        const detalleEnvio = document.getElementById('detalleEnvio');
+
+        // Actualizar fecha programada cuando cambia el selector
+        selectorFecha.addEventListener('change', function() {
+            fechaProgramada.textContent = this.value;
+        });
+
+        // Programar envío
+        btnProgramar.addEventListener('click', function() {
+            const fechaSeleccionada = selectorFecha.value;
+            const textoOriginal = btnProgramar.innerHTML;
+            
+            // Cambiar estado del botón
+            btnProgramar.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Programando...';
+            btnProgramar.disabled = true;
+
+            // Simular programación
+            setTimeout(() => {
+                // 90% de éxito, 10% de fallo
+                const exito = Math.random() > 0.1;
+                
+                if (exito) {
+                    // Programación exitosa
+                    ofertaExitosa.style.display = 'block';
+                    ofertaExitosa.classList.add('animacion-oferta');
+                    errorOferta.style.display = 'none';
+                    detalleEnvio.textContent = `Envío programado para el ${fechaSeleccionada} a 2,548 clientes`;
+                    
+                    btnProgramar.innerHTML = '<i class="fas fa-check"></i> ¡Programado!';
+                    btnProgramar.style.background = 'var(--color-success)';
+                    btnProgramar.style.color = 'var(--color-text-light)';
+                    
+                    // Agregar entrada al log
+                    const logContainer = document.querySelector('.log-envio');
+                    const nuevaEntrada = document.createElement('div');
+                    nuevaEntrada.className = 'entrada-envio';
+                    nuevaEntrada.innerHTML = `
+                        <span class="fecha-envio-log">${new Date().toLocaleTimeString('es-ES', {hour: '2-digit', minute:'2-digit'})}</span>
+                        <span class="envio-exitoso">Programación confirmada: Envío para ${fechaSeleccionada}</span>
+                    `;
+                    logContainer.insertBefore(nuevaEntrada, logContainer.querySelector('.entrada-envio'));
+                } else {
+                    // Error en programación
+                    ofertaExitosa.style.display = 'none';
+                    errorOferta.style.display = 'block';
+                    errorOferta.classList.add('animacion-oferta');
+                    
+                    btnProgramar.innerHTML = '<i class="fas fa-redo"></i> Reintentar';
+                    btnProgramar.style.background = 'var(--color-error)';
+                    btnProgramar.style.color = 'var(--color-text-light)';
+                }
+                
+                // Rehabilitar botón después de 3 segundos
+                setTimeout(() => {
+                    btnProgramar.innerHTML = textoOriginal;
+                    btnProgramar.style.background = 'var(--color-background)';
+                    btnProgramar.style.color = 'var(--color-primary)';
+                    btnProgramar.disabled = false;
+                    
+                    // Remover animación
+                    ofertaExitosa.classList.remove('animacion-oferta');
+                    errorOferta.classList.remove('animacion-oferta');
+                }, 3000);
+                
+            }, 1500);
+        });
+
+        // Enviar oferta inmediatamente
+        btnEnviarAhora.addEventListener('click', function() {
+            const textoOriginal = btnEnviarAhora.innerHTML;
+            
+            // Cambiar estado del botón
+            btnEnviarAhora.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
+            btnEnviarAhora.disabled = true;
+            btnProgramar.disabled = true;
+
+            // Simular envío masivo
+            setTimeout(() => {
+                // 85% de éxito, 15% de fallo
+                const exito = Math.random() > 0.15;
+                
+                if (exito) {
+                    // Envío exitoso
+                    ofertaExitosa.style.display = 'block';
+                    ofertaExitosa.classList.add('animacion-oferta');
+                    errorOferta.style.display = 'none';
+                    detalleEnvio.textContent = 'Campaña enviada a 2,548 clientes exitosamente';
+                    
+                    btnEnviarAhora.innerHTML = '<i class="fas fa-check"></i> ¡Enviado!';
+                    btnEnviarAhora.style.background = 'var(--color-success)';
+                    btnEnviarAhora.style.color = 'var(--color-text-light)';
+                    
+                    // Agregar entrada al log
+                    const logContainer = document.querySelector('.log-envio');
+                    const nuevaEntrada = document.createElement('div');
+                    nuevaEntrada.className = 'entrada-envio';
+                    nuevaEntrada.innerHTML = `
+                        <span class="fecha-envio-log">${new Date().toLocaleTimeString('es-ES', {hour: '2-digit', minute:'2-digit'})}</span>
+                        <span class="envio-exitoso">Campaña enviada: Ofertas de Otoño 2025 a 2,548 clientes</span>
+                    `;
+                    logContainer.insertBefore(nuevaEntrada, logContainer.querySelector('.entrada-envio'));
+                    
+                    // Mostrar estadísticas después de 1 segundo
+                    setTimeout(() => {
+                        alert('📊 Estadísticas de envío:\n\n✅ Emails enviados: 2,548\n📨 Tasa de apertura estimada: 68%\n🖱️ Tasa de clics estimada: 24%');
+                    }, 1000);
+                } else {
+                    // Error en envío
+                    ofertaExitosa.style.display = 'none';
+                    errorOferta.style.display = 'block';
+                    errorOferta.classList.add('animacion-oferta');
+                    
+                    btnEnviarAhora.innerHTML = '<i class="fas fa-redo"></i> Reintentar';
+                    btnEnviarAhora.style.background = 'var(--color-error)';
+                    btnEnviarAhora.style.color = 'var(--color-text-light)';
+                }
+                
+                // Rehabilitar botones después de 3 segundos
+                setTimeout(() => {
+                    btnEnviarAhora.innerHTML = textoOriginal;
+                    btnEnviarAhora.style.background = 'var(--color-accent)';
+                    btnEnviarAhora.style.color = 'var(--color-text-dark)';
+                    btnEnviarAhora.disabled = false;
+                    btnProgramar.disabled = false;
+                    
+                    // Remover animación
+                    ofertaExitosa.classList.remove('animacion-oferta');
+                    errorOferta.classList.remove('animacion-oferta');
+                }, 3000);
+                
+            }, 2000);
+        });
+
+        // Efectos interactivos en las ofertas
+        const itemsOferta = document.querySelectorAll('.item-oferta');
+        itemsOferta.forEach(item => {
+            item.addEventListener('click', function() {
+                const ofertaTexto = this.querySelector('.texto-oferta').textContent;
+                alert(`📋 Detalles de la oferta:\n\n${ofertaTexto}\n\n⏰ Válida por tiempo limitado`);
+            });
+        });
+    </script>
+</body>
+</html>
