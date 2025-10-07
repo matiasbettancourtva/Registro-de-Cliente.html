@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Respaldo de Datos - Frío Natural</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* VARIABLES DE COLOR - Tema Rosa Heladería */
+        :root {
+            --color-primary: #ff69b4;
+            --color-secondary: #ff85a1;
+            --color-accent: #ffd166;
+            --color-background: #ffffff;
+            --color-text-dark: #333333;
+            --color-text-light: #ffffff;
+            --color-success: #4CAF50;
+            --color-warning: #ff9800;
+            --color-error: #f44336;
+            --color-info: #2196F3;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #ffccd5 0%, #c9e9ff 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* BOTÓN DE REGRESO */
+        .back-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 100;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .back-button:hover {
+            background: white;
+            transform: translateX(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+        }
+        
+        .back-button i {
+            color: var(--color-primary);
+            font-size: 18px;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            width: 90%;
+            max-width: 500px;
+            margin-top: 60px;
+        }
+
+        .panel {
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .panel:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Bloque principal del título */
+        .respaldo-header {
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+            color: var(--color-text-light);
+            border-left: 5px solid var(--color-accent);
+            text-align: center;
+        }
+
+        .respaldo-header h2 {
+            margin: 0;
+            font-size: 1.8em;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+        }
+
+        .subtitulo-respaldo {
+            margin: 10px 0 0 0;
+            opacity: 0.9;
+            font-size: 1em;
+        }
+
+        /* Estadísticas de respaldo */
+        .estadisticas-respaldo {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .estadistica-respaldo {
+            background: var(--color-background);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            border: 2px solid var(--color-secondary);
+            transition: all 0.3s ease;
+        }
+
+        .estadistica-respaldo:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .valor-estadistica {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: var(--color-primary);
+            margin: 10px 0 5px 0;
+        }
+
+        .etiqueta-estadistica {
+            font-size: 0.9em;
+            color: #888;
+            font-weight: 500;
+        }
+
+        /* Bloque de Opciones de Respaldo */
+        .respaldo-opciones {
+            background: var(--color-background);
+            border: 2px solid var(--color-secondary);
+            padding: 25px;
+        }
+        
+        .respaldo-opciones h3 {
+            color: var(--color-primary);
+            margin: 0 0 20px 0;
+            font-size: 1.3em;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .lista-opciones {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .item-opcion {
+            padding: 15px;
+            margin-bottom: 12px;
+            background: rgba(255, 105, 180, 0.05);
+            border-radius: 10px;
+            border-left: 4px solid var(--color-primary);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .item-opcion:hover {
+            background: rgba(255, 105, 180, 0.1);
+            transform: translateX(5px);
+        }
+
+        .item-opcion:last-child {
+            margin-bottom: 0;
+        }
+
+        .icono-opcion {
+            font-size: 1.5em;
+            color: var(--color-primary);
+            width: 30px;
+            text-align: center;
+        }
+
+        .info-opcion {
+            flex: 1;
+        }
+
+        .titulo-opcion {
+            font-weight: bold;
+            color: var(--color-text-dark);
+            font-size: 1.1em;
+        }
+
+        .detalle-opcion {
+            font-size: 0.9em;
+            color: #888;
+            margin-top: 5px;
+        }
+
+        .estado-opcion {
+            background: var(--color-success);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+
+        /* Bloque de Botón */
+        .respaldo-accion {
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+            padding: 25px;
+            text-align: center;
+            color: var(--color-text-light);
+        }
+        
+        .respaldo-accion button {
+            padding: 15px 30px;
+            background: var(--color-background);
+            color: var(--color-primary);
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1.1em;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin: 0 auto;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .respaldo-accion button:hover {
+            background: var(--color-accent);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Log de Respaldo */
+        .log-respaldo {
+            background: var(--color-accent);
+            color: var(--color-text-dark);
+            border: 2px solid #ffc145;
+            font-size: 0.9em;
+            padding: 25px;
+            border-radius: 15px;
+        }
+
+        .log-respaldo h4 {
+            margin-top: 0;
+            color: var(--color-primary);
+            font-size: 1.2em;
+            text-align: center;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .entrada-log {
+            margin-bottom: 12px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid rgba(255, 105, 180, 0.3);
+        }
+
+        .entrada-log:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        .fecha-log {
+            color: var(--color-primary);
+            font-weight: bold;
+            margin-right: 8px;
+        }
+
+        .log-exitoso {
+            color: var(--color-success);
+            font-weight: 500;
+        }
+
+        .log-error {
+            color: var(--color-error);
+            font-weight: 500;
+        }
+
+        .log-info {
+            color: var(--color-info);
+            font-weight: 500;
+        }
+
+        /* Estados dinámicos */
+        .mensaje-oculto {
+            display: none;
+        }
+
+        .animacion-respaldo {
+            animation: respaldoPulse 2s ease-in-out;
+        }
+
+        @keyframes respaldoPulse {
+            0% { transform: scale(0.95); opacity: 0.7; }
+            50% { transform: scale(1.02); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* Indicador de carga */
+        .cargando-respaldo {
+            text-align: center;
+            padding: 20px;
+            color: var(--color-primary);
+            font-weight: bold;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(255, 105, 180, 0.3);
+            border-top: 4px solid var(--color-primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Barra de progreso */
+        .barra-progreso {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 105, 180, 0.2);
+            border-radius: 4px;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+
+        .progreso {
+            height: 100%;
+            background: linear-gradient(90deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+            width: 0%;
+        }
+
+        /* Mensaje de Éxito */
+        .respaldo-exitoso {
+            background: rgba(76, 175, 80, 0.1);
+            color: #2e7d32;
+            border: 2px solid var(--color-success);
+            font-weight: bold;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        /* Mensaje de Error */
+        .error-respaldo {
+            background: rgba(244, 67, 54, 0.1);
+            color: #c62828;
+            border: 2px solid var(--color-error);
+            font-weight: bold;
+            text-align: center;
+            padding: 20px;
+        }
+
+        /* Opciones adicionales */
+        .opciones-avanzadas {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-secundario {
+            padding: 8px 15px;
+            background: var(--color-background);
+            color: var(--color-primary);
+            border: 2px solid var(--color-primary);
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.9em;
+        }
+
+        .btn-secundario:hover {
+            background: var(--color-primary);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                width: 95%;
+            }
+            
+            .back-button {
+                top: 15px;
+                left: 15px;
+                width: 40px;
+                height: 40px;
+            }
+            
+            .panel {
+                padding: 20px;
+            }
+            
+            .estadisticas-respaldo {
+                grid-template-columns: 1fr;
+            }
+            
+            .opciones-avanzadas {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <button class="back-button" id="backButton">
+        <i class="fas fa-arrow-left"></i>
+    </button>
+
+    <div class="container">
+
+        <div class="panel respaldo-header">
+            <h2>💾 Respaldo de Datos</h2>
+            <p class="subtitulo-respaldo">Protege la información de tu heladería</p>
+        </div>
+
+        <div class="panel respaldo-opciones">
+            <h3><i class="fas fa-shield-alt"></i> Estado del Sistema</h3>
+            
+            <div class="estadisticas-respaldo">
+                <div class="estadistica-respaldo">
+                    <i class="fas fa-database" style="color: var(--color-primary); font-size: 1.5em;"></i>
+                    <div class="valor-estadistica">156 MB</div>
+                    <div class="etiqueta-estadistica">Datos a respaldar</div>
+                </div>
+                
+                <div class="estadistica-respaldo">
+                    <i class="fas fa-cloud" style="color: var(--color-primary); font-size: 1.5em;"></i>
+                    <div class="valor-estadistica">87%</div>
+                    <div class="etiqueta-estadistica">Espacio disponible</div>
+                </div>
+            </div>
+            
+            <h3 style="margin-top: 30px;"><i class="fas fa-cogs"></i> Opciones de Respaldo</h3>
+            <ul class="lista-opciones">
+                <li class="item-opcion">
+                    <span class="icono-opcion">🌅</span>
+                    <div class="info-opcion">
+                        <div class="titulo-opcion">Respaldo Diario Automático</div>
+                        <div class="detalle-opcion">Todos los días a las 00:00 hrs - Último: Hoy 00:00</div>
+                    </div>
+                    <span class="estado-opcion">ACTIVO</span>
+                </li>
+                <li class="item-opcion">
+                    <span class="icono-opcion">📅</span>
+                    <div class="info-opcion">
+                        <div class="titulo-opcion">Respaldo Semanal Completo</div>
+                        <div class="detalle-opcion">Todos los domingos a las 02:00 hrs</div>
+                    </div>
+                    <span class="estado-opcion">ACTIVO</span>
+                </li>
+                <li class="item-opcion">
+                    <span class="icono-opcion">🔄</span>
+                    <div class="info-opcion">
+                        <div class="titulo-opcion">Respaldo Manual</div>
+                        <div class="detalle-opcion">Bajo demanda - Control total del proceso</div>
+                    </div>
+                    <span class="estado-opcion">LISTO</span>
+                </li>
+            </ul>
+
+            <div class="opciones-avanzadas">
+                <button class="btn-secundario">
+                    <i class="fas fa-history"></i> Programar Respaldo
+                </button>
+                <button class="btn-secundario">
+                    <i class="fas fa-cloud-download-alt"></i> Restaurar Backup
+                </button>
+                <button class="btn-secundario">
+                    <i class="fas fa-cog"></i> Configuración
+                </button>
+            </div>
+        </div>
+
+        <div class="panel respaldo-accion">
+            <button id="btnIniciarRespaldo">
+                <i class="fas fa-rocket"></i> Iniciar Respaldo Ahora
+            </button>
+        </div>
+
+        <div class="panel cargando-respaldo mensaje-oculto" id="cargandoRespaldo">
+            <div class="spinner"></div>
+            <p>Realizando respaldo de datos...</p>
+            <div class="barra-progreso">
+                <div class="progreso" id="barraProgreso"></div>
+            </div>
+            <p id="porcentajeProgreso">0% completado</p>
+        </div>
+
+        <div class="panel respaldo-exitoso mensaje-oculto" id="respaldoExitoso">
+            <i class="fas fa-check-circle"></i>
+            <p style="margin: 10px 0 5px 0;">¡Respaldo realizado correctamente!</p>
+            <p style="margin: 0; font-size: 0.9em; opacity: 0.8;" id="detalleRespaldo"></p>
+        </div>
+
+        <div class="panel error-respaldo mensaje-oculto" id="errorRespaldo">
+            <i class="fas fa-exclamation-triangle"></i>
+            <p style="margin: 10px 0 5px 0;">Error en el proceso de respaldo</p>
+            <p style="margin: 0; font-size: 0.9em; opacity: 0.8;">Los datos no se pudieron guardar correctamente</p>
+        </div>
+        
+        <div class="panel log-respaldo">
+            <h4><i class="fas fa-history"></i> Historial de Respaldos</h4>
+            <div class="entrada-log">
+                <span class="fecha-log">00:00</span>
+                <span class="log-exitoso">Backup diario realizado con éxito (156MB)</span>
+            </div>
+            <div class="entrada-log">
+                <span class="fecha-log">23:45</span>
+                <span class="log-info">Verificación de integridad completada</span>
+            </div>
+            <div class="entrada-log">
+                <span class="fecha-log">23:30</span>
+                <span class="log-error">Error: No se pudo guardar respaldo en servidor</span>
+            </div>
+            <div class="entrada-log">
+                <span class="fecha-log">23:15</span>
+                <span class="log-exitoso">Respaldo manual completado (142MB)</span>
+            </div>
+            <div class="entrada-log">
+                <span class="fecha-log">23:00</span>
+                <span class="log-info">Inicio de proceso de respaldo programado</span>
+            </div>
+            <div class="entrada-log">
+                <span class="fecha-log">22:45</span>
+                <span class="log-exitoso">Sincronización con nube completada</span>
+            </div>
+        </div>
+        
+    </div>
+
+    <script>
+        // Función para el botón de regreso
+        document.getElementById('backButton').addEventListener('click', function() {
+            window.location.href = 'dashboard.html';
+        });
+
+        // Elementos del DOM
+        const btnIniciarRespaldo = document.getElementById('btnIniciarRespaldo');
+        const cargandoRespaldo = document.getElementById('cargandoRespaldo');
+        const respaldoExitoso = document.getElementById('respaldoExitoso');
+        const errorRespaldo = document.getElementById('errorRespaldo');
+        const barraProgreso = document.getElementById('barraProgreso');
+        const porcentajeProgreso = document.getElementById('porcentajeProgreso');
+        const detalleRespaldo = document.getElementById('detalleRespaldo');
+        const logRespaldo = document.querySelector('.log-respaldo');
+
+        // Iniciar respaldo
+        btnIniciarRespaldo.addEventListener('click', function() {
+            const textoOriginal = btnIniciarRespaldo.innerHTML;
+            
+            // Cambiar estado del botón
+            btnIniciarRespaldo.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Preparando...';
+            btnIniciarRespaldo.disabled = true;
+            cargandoRespaldo.style.display = 'block';
+            respaldoExitoso.style.display = 'none';
+            errorRespaldo.style.display = 'none';
+
+            // Simular proceso de respaldo con barra de progreso
+            let progreso = 0;
+            const intervalo = setInterval(() => {
+                progreso += Math.random() * 10;
+                if (progreso >= 100) {
+                    progreso = 100;
+                    clearInterval(intervalo);
+                    
+                    // 90% de éxito, 10% de fallo
+                    const exito = Math.random() > 0.1;
+                    
+                    setTimeout(() => {
+                        if (exito) {
+                            // Respaldo exitoso
+                            cargandoRespaldo.style.display = 'none';
+                            respaldoExitoso.style.display = 'block';
+                            respaldoExitoso.classList.add('animacion-respaldo');
+                            
+                            const tamanoRespaldo = (156 + Math.random() * 20).toFixed(1);
+                            detalleRespaldo.textContent = `Respaldo de ${tamanoRespaldo}MB guardado en servidor seguro`;
+                            
+                            btnIniciarRespaldo.innerHTML = '<i class="fas fa-check"></i> ¡Completado!';
+                            btnIniciarRespaldo.style.background = 'var(--color-success)';
+                            btnIniciarRespaldo.style.color = 'var(--color-text-light)';
+                            
+                            // Agregar entrada al log
+                            const nuevaEntrada = document.createElement('div');
+                            nuevaEntrada.className = 'entrada-log';
+                            nuevaEntrada.innerHTML = `
+                                <span class="fecha-log">${new Date().toLocaleTimeString('es-ES', {hour: '2-digit', minute:'2-digit'})}</span>
+                                <span class="log-exitoso">Respaldo manual realizado con éxito (${tamanoRespaldo}MB)</span>
+                            `;
+                            logRespaldo.insertBefore(nuevaEntrada, logRespaldo.querySelector('.entrada-log'));
+                        } else {
+                            // Error en respaldo
+                            cargandoRespaldo.style.display = 'none';
+                            errorRespaldo.style.display = 'block';
+                            errorRespaldo.classList.add('animacion-respaldo');
+                            
+                            btnIniciarRespaldo.innerHTML = '<i class="fas fa-redo"></i> Reintentar';
+                            btnIniciarRespaldo.style.background = 'var(--color-error)';
+                            btnIniciarRespaldo.style.color = 'var(--color-text-light)';
+                            
+                            // Agregar entrada al log
+                            const nuevaEntrada = document.createElement('div');
+                            nuevaEntrada.className = 'entrada-log';
+                            nuevaEntrada.innerHTML = `
+                                <span class="fecha-log">${new Date().toLocaleTimeString('es-ES', {hour: '2-digit', minute:'2-digit'})}</span>
+                                <span class="log-error">Error: Fallo en conexión con servidor de respaldo</span>
+                            `;
+                            logRespaldo.insertBefore(nuevaEntrada, logRespaldo.querySelector('.entrada-log'));
+                        }
+                        
+                        // Rehabilitar botón después de 3 segundos
+                        setTimeout(() => {
+                            btnIniciarRespaldo.innerHTML = textoOriginal;
+                            btnIniciarRespaldo.style.background = 'var(--color-background)';
+                            btnIniciarRespaldo.style.color = 'var(--color-primary)';
+                            btnIniciarRespaldo.disabled = false;
+                            
+                            // Remover animación
+                            respaldoExitoso.classList.remove('animacion-respaldo');
+                            errorRespaldo.classList.remove('animacion-respaldo');
+                        }, 3000);
+                    }, 500);
+                }
+                
+                barraProgreso.style.width = `${progreso}%`;
+                porcentajeProgreso.textContent = `${Math.round(progreso)}% completado`;
+            }, 200);
+        });
+
+        // Efectos interactivos en las opciones
+        const opcionesItems = document.querySelectorAll('.item-opcion');
+        opcionesItems.forEach(item => {
+            item.addEventListener('click', function() {
+                const tituloOpcion = this.querySelector('.titulo-opcion').textContent;
+                const detalleOpcion = this.querySelector('.detalle-opcion').textContent;
+                const estadoOpcion = this.querySelector('.estado-opcion').textContent;
+                
+                alert(`⚙️ Configuración de Respaldo:\n\n${tituloOpcion}\n\n${detalleOpcion}\n\nEstado: ${estadoOpcion}\n\nHaz clic en "Configuración" para modificar.`);
+            });
+        });
+
+        // Botones secundarios
+        const botonesSecundarios = document.querySelectorAll('.btn-secundario');
+        botonesSecundarios.forEach(boton => {
+            boton.addEventListener('click', function() {
+                const accion = this.querySelector('i').className.includes('history') ? 'Programar Respaldo' : 
+                              this.querySelector('i').className.includes('cloud-download-alt') ? 'Restaurar Backup' : 'Configuración';
+                
+                // Agregar entrada al log
+                const nuevaEntrada = document.createElement('div');
+                nuevaEntrada.className = 'entrada-log';
+                nuevaEntrada.innerHTML = `
+                    <span class="fecha-log">${new Date().toLocaleTimeString('es-ES', {hour: '2-digit', minute:'2-digit'})}</span>
+                    <span class="log-info">Acción: ${accion} - Redirigiendo a configuración</span>
+                `;
+                logRespaldo.insertBefore(nuevaEntrada, logRespaldo.querySelector('.entrada-log'));
+                
+                alert(`🔧 ${accion}\n\nEsta función te redirigirá a la pantalla de configuración avanzada donde podrás:\n\n• ${accion === 'Programar Respaldo' ? 'Establecer horarios automáticos' : accion === 'Restaurar Backup' ? 'Seleccionar backup para restaurar' : 'Modificar parámetros del sistema'}\n• Configurar destinos de almacenamiento\n• Gestionar políticas de retención`);
+            });
+        });
+
+        // Simular respaldo automático cada hora
+        setInterval(() => {
+            const ahora = new Date();
+            if (ahora.getMinutes() === 0) { // Cada hora en punto
+                const nuevaEntrada = document.createElement('div');
+                nuevaEntrada.className = 'entrada-log';
+                nuevaEntrada.innerHTML = `
+                    <span class="fecha-log">${ahora.toLocaleTimeString('es-ES', {hour: '2-digit', minute:'2-digit'})}</span>
+                    <span class="log-info">Verificación automática de integridad completada</span>
+                `;
+                logRespaldo.insertBefore(nuevaEntrada, logRespaldo.querySelector('.entrada-log'));
+                
+                // Limitar el número de entradas en el log
+                if (logRespaldo.querySelectorAll('.entrada-log').length > 8) {
+                    logRespaldo.removeChild(logRespaldo.lastChild);
+                }
+            }
+        }, 60000); // Verificar cada minuto
+    </script>
+</body>
+</html>
