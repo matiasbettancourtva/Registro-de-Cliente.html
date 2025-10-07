@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Boleta Digital - Frío Natural</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* VARIABLES DE COLOR - Tema Rosa Heladería */
+        :root {
+            --color-primary: #ff69b4;
+            --color-secondary: #ff85a1;
+            --color-accent: #ffd166;
+            --color-background: #ffffff;
+            --color-text-dark: #333333;
+            --color-text-light: #ffffff;
+            --color-success: #4CAF50;
+            --color-error: #f44336;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #ffccd5 0%, #c9e9ff 100%);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        /* BOTÓN DE REGRESO */
+        .back-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 100;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .back-button:hover {
+            background: white;
+            transform: translateX(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+        }
+        
+        .back-button i {
+            color: var(--color-primary);
+            font-size: 18px;
+        }
+
+        /* Barra de Navegación */
+        .navbar {
+            background: var(--color-primary);
+            color: var(--color-text-light);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(255, 105, 180, 0.3);
+        }
+        .navbar-brand {
+            font-weight: bold;
+            font-size: 20px;
+            color: var(--color-text-light);
+            text-decoration: none;
+        }
+        .navbar-icon {
+            font-size: 20px;
+            color: var(--color-text-light);
+            cursor: pointer;
+        }
+
+        /* Contenedor Principal */
+        .content-container {
+            display: flex;
+            gap: 25px;
+            padding: 30px;
+            flex-grow: 1;
+            justify-content: center;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        /* Panel Izquierdo */
+        .panel-izquierda {
+            width: 200px;
+            background: var(--color-primary);
+            padding: 30px;
+            text-align: center;
+            border-radius: 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 300px;
+            box-shadow: 0 8px 25px rgba(255, 105, 180, 0.3);
+            color: var(--color-text-light);
+        }
+
+        .logo {
+            width: 120px;
+            height: 120px;
+            background-color: var(--color-background);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+            overflow: hidden;
+            border: 4px solid var(--color-accent);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .frio-natural-text {
+            font-weight: bold;
+            font-size: 1.4em;
+            margin: 10px 0;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .panel-izquierda p {
+            margin: 5px 0;
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        /* Contenedor de Boleta Digital */
+        .boleta-container {
+            display: flex;
+            gap: 30px;
+            background: linear-gradient(135deg, #fff5f8 0%, #fff 100%);
+            padding: 35px;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            max-width: 750px;
+            flex-wrap: wrap;
+            justify-content: center;
+            border: 2px solid var(--color-secondary);
+        }
+
+        /* Sección de Información de Pago */
+        .seccion-pago-info {
+            background: var(--color-background);
+            padding: 30px;
+            border-radius: 12px;
+            width: 280px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            border: 2px solid var(--color-secondary);
+        }
+        
+        .pago-confirmado {
+            color: var(--color-success);
+            font-size: 1.3em;
+            font-weight: bold;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .total-monto {
+            font-size: 2.2em;
+            font-weight: bold;
+            color: var(--color-primary);
+            margin-bottom: 30px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+        }
+        
+        .descargar-btn {
+            background: var(--color-primary);
+            color: var(--color-text-light);
+            border: none;
+            padding: 15px 25px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            width: 100%;
+            font-size: 1.1em;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(255, 105, 180, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .descargar-btn:hover {
+            background: var(--color-secondary);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 18px rgba(255, 105, 180, 0.4);
+        }
+
+        /* Sección de Resultados de Boleta */
+        .seccion-resultados-boleta {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            width: 320px;
+        }
+        
+        /* Estilo para Boleta Enviada (Éxito) */
+        .boleta-enviada {
+            background: rgba(76, 175, 80, 0.1);
+            color: #2e7d32;
+            border: 2px solid var(--color-success);
+            padding: 25px;
+            border-radius: 10px;
+            font-weight: bold;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(76, 175, 80, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .boleta-enviada:hover {
+            transform: translateY(-2px);
+        }
+        
+        /* Estilo para Error en Envío de Boleta */
+        .error-envio {
+            background: rgba(244, 67, 54, 0.1);
+            color: #c62828;
+            border: 2px solid var(--color-error);
+            padding: 25px;
+            border-radius: 10px;
+            font-weight: bold;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(244, 67, 54, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .error-envio:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Detalles de la boleta */
+        .detalles-boleta {
+            margin-top: 20px;
+            padding: 20px;
+            background: rgba(255, 105, 180, 0.05);
+            border-radius: 8px;
+            border-left: 4px solid var(--color-primary);
+        }
+        
+        .detalle-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(255, 105, 180, 0.2);
+        }
+        
+        .detalle-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+
+        /* Estados dinámicos */
+        .mensaje-oculto {
+            display: none;
+        }
+        
+        .animacion-envio {
+            animation: enviando 2s ease-in-out;
+        }
+        
+        @keyframes enviando {
+            0% { transform: scale(0.95); opacity: 0.7; }
+            50% { transform: scale(1.02); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* Media Queries */
+        @media (max-width: 768px) {
+            .content-container {
+                flex-direction: column;
+                align-items: center;
+                padding: 20px;
+            }
+            
+            .back-button {
+                top: 15px;
+                left: 15px;
+                width: 40px;
+                height: 40px;
+            }
+            
+            .panel-izquierda, .boleta-container {
+                width: 90%;
+                max-width: 400px;
+            }
+            
+            .panel-izquierda {
+                height: auto;
+                padding: 25px;
+            }
+            
+            .boleta-container {
+                flex-direction: column;
+            }
+            
+            .seccion-pago-info, .seccion-resultados-boleta {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <button class="back-button" id="backButton">
+        <i class="fas fa-arrow-left"></i>
+    </button>
+
+    <nav class="navbar">
+        <a href="#" class="navbar-brand">Frío Natural</a>
+        <div class="navbar-icon">⚙️</div>
+    </nav>
+
+    <div class="content-container">
+        
+        <div class="panel-izquierda">
+            <div class="logo">
+                <img src="https://sdmntpreastus2.oaiusercontent.com/files/00000000-770c-61f6-8aef-74efdfd45c34/raw?se=2025-10-07T06%3A14%3A19Z&sp=r&sv=2024-08-04&sr=b&scid=4f815d17-8442-536a-b8ea-22fae996e942&skoid=1e6af1bf-6b08-4a04-8919-15773e7e7024&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-10-06T07%3A34%3A45Z&ske=2025-10-07T07%3A34%3A45Z&sks=b&skv=2024-08-04&sig=KatmFJ/TVLD%2BeGdhshSRruxu%2BXVNZ9PVtudcjN89i0U%3D" alt="Logo Frío Natural">
+            </div>
+            <p class="frio-natural-text">Frío Natural</p>
+            <p>Boleta Digital</p>
+            <p>📄 Comprobante Electrónico</p>
+        </div>
+
+        <div class="boleta-container">
+            
+            <div class="seccion-pago-info">
+                <div class="pago-confirmado">
+                    <i class="fas fa-check-circle"></i> Pago confirmado
+                </div>
+                <div class="total-monto">$50.000</div>
+                
+                <div class="detalles-boleta">
+                    <div class="detalle-item">
+                        <span>N° Pedido:</span>
+                        <span>#00123</span>
+                    </div>
+                    <div class="detalle-item">
+                        <span>Fecha:</span>
+                        <span>07/10/2025</span>
+                    </div>
+                    <div class="detalle-item">
+                        <span>Método:</span>
+                        <span>Tarjeta Crédito</span>
+                    </div>
+                </div>
+                
+                <button class="descargar-btn" id="btnDescargar">
+                    <i class="fas fa-download"></i> Descargar Boleta
+                </button>
+            </div>
+
+            <div class="seccion-resultados-boleta">
+                
+                <div class="boleta-enviada" id="boletaEnviada">
+                    <i class="fas fa-paper-plane"></i>
+                    <p style="font-size: 1em; margin: 10px 0 5px 0;">Envío por correo:</p>
+                    <p style="margin: 0; font-size: 1.1em;">"Boleta digital enviada a tu correo"</p>
+                    <p style="margin: 10px 0 0 0; font-size: 0.9em; opacity: 0.8;">Revisa tu bandeja de entrada</p>
+                </div>
+                
+                <div class="error-envio mensaje-oculto" id="errorEnvio">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <p style="font-size: 1em; margin: 10px 0 5px 0;">Error en el envío:</p>
+                    <p style="margin: 0; font-size: 1.1em;">"Error en servicio de correo"</p>
+                    <p style="margin: 10px 0 0 0; font-size: 0.9em; opacity: 0.8;">Descargue su boleta manualmente</p>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+
+    <script>
+        // Función para el botón de regreso
+        document.getElementById('backButton').addEventListener('click', function() {
+            window.location.href = 'dashboard.html';
+        });
+
+        // Elementos del DOM
+        const btnDescargar = document.getElementById('btnDescargar');
+        const boletaEnviada = document.getElementById('boletaEnviada');
+        const errorEnvio = document.getElementById('errorEnvio');
+
+        // Inicialmente mostrar solo el mensaje de éxito
+        boletaEnviada.style.display = 'block';
+        errorEnvio.style.display = 'none';
+
+        // Descargar boleta
+        btnDescargar.addEventListener('click', function() {
+            // Cambiar estado del botón
+            const textoOriginal = btnDescargar.innerHTML;
+            btnDescargar.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Procesando...';
+            btnDescargar.disabled = true;
+
+            // Simular procesamiento de descarga
+            setTimeout(() => {
+                // 80% de éxito, 20% de fallo
+                const exito = Math.random() > 0.2;
+                
+                if (exito) {
+                    // Éxito en el envío
+                    boletaEnviada.style.display = 'block';
+                    boletaEnviada.classList.add('animacion-envio');
+                    errorEnvio.style.display = 'none';
+                    
+                    // Cambiar botón a éxito
+                    btnDescargar.innerHTML = '<i class="fas fa-check"></i> Descargado';
+                    btnDescargar.style.background = 'var(--color-success)';
+                    
+                    // Simular descarga
+                    alert('¡Boleta descargada exitosamente! También se ha enviado a tu correo.');
+                } else {
+                    // Error en el envío
+                    boletaEnviada.style.display = 'none';
+                    errorEnvio.style.display = 'block';
+                    errorEnvio.classList.add('animacion-envio');
+                    
+                    // Cambiar botón a error
+                    btnDescargar.innerHTML = '<i class="fas fa-redo"></i> Reintentar';
+                    btnDescargar.style.background = 'var(--color-error)';
+                }
+                
+                // Rehabilitar botón después de 3 segundos
+                setTimeout(() => {
+                    btnDescargar.innerHTML = textoOriginal;
+                    btnDescargar.style.background = 'var(--color-primary)';
+                    btnDescargar.disabled = false;
+                    
+                    // Remover animación
+                    boletaEnviada.classList.remove('animacion-envio');
+                    errorEnvio.classList.remove('animacion-envio');
+                }, 3000);
+                
+            }, 2000);
+        });
+    </script>
+</body>
+</html>
