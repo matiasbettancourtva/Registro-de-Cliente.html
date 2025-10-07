@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seguimiento en Tiempo Real - Frío Natural</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* VARIABLES DE COLOR - Tema Rosa Heladería */
+        :root {
+            --color-primary: #ff69b4;
+            --color-secondary: #ff85a1;
+            --color-accent: #ffd166;
+            --color-background: #ffffff;
+            --color-text-dark: #333333;
+            --color-text-light: #ffffff;
+            --color-success: #4CAF50;
+            --color-warning: #ff9800;
+            --color-error: #f44336;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #ffccd5 0%, #c9e9ff 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* BOTÓN DE REGRESO */
+        .back-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 100;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .back-button:hover {
+            background: white;
+            transform: translateX(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+        }
+        
+        .back-button i {
+            color: var(--color-primary);
+            font-size: 18px;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            width: 90%;
+            max-width: 450px;
+            margin-top: 60px;
+        }
+
+        .panel {
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        /* Bloque principal del seguimiento */
+        .seguimiento-main {
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+            color: var(--color-text-light);
+            border-radius: 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .seguimiento-main::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--color-accent);
+        }
+        
+        .seguimiento-main h3 {
+            margin: 0 0 15px 0;
+            font-size: 1.4em;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+        }
+
+        .estado-pedido {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin: 15px 0;
+            font-size: 1.1em;
+            font-weight: bold;
+        }
+
+        .tiempo-restante {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            margin-top: 10px;
+            display: inline-block;
+        }
+
+        /* Bloque del mapa */
+        .mapa-container {
+            background: var(--color-background);
+            padding: 25px;
+            border-radius: 12px;
+            text-align: center;
+            height: 180px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid var(--color-secondary);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .mapa-simulado {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        
+        .punto-repartidor {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background: var(--color-primary);
+            border: 3px solid var(--color-background);
+            border-radius: 50%;
+            box-shadow: 0 0 10px rgba(255, 105, 180, 0.5);
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        /* Bloque de acciones */
+        .acciones-container {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .acciones-container button {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-actualizar { 
+            background: var(--color-primary);
+            color: var(--color-text-light);
+        }
+        
+        .btn-actualizar:hover {
+            background: var(--color-secondary);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(255, 105, 180, 0.4);
+        }
+        
+        .btn-reintentar { 
+            background: var(--color-accent);
+            color: var(--color-text-dark);
+        }
+        
+        .btn-reintentar:hover {
+            background: #ffc145;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(255, 209, 102, 0.4);
+        }
+
+        /* Mensajes de estado */
+        .status-message {
+            padding: 20px;
+            border-radius: 10px;
+            font-weight: bold;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .status-success {
+            background: rgba(76, 175, 80, 0.1);
+            color: #2e7d32;
+            border: 2px solid var(--color-success);
+            box-shadow: 0 4px 12px rgba(76, 175, 80, 0.2);
+        }
+
+        .status-error {
+            background: rgba(244, 67, 54, 0.1);
+            color: #c62828;
+            border: 2px solid var(--color-error);
+            box-shadow: 0 4px 12px rgba(244, 67, 54, 0.2);
+        }
+        
+        /* Log de seguimiento */
+        .log-seguimiento {
+            background: var(--color-background);
+            padding: 20px;
+            border-radius: 12px;
+            border: 2px solid var(--color-secondary);
+            font-size: 0.85em;
+            color: var(--color-text-dark);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .log-title {
+            font-weight: bold;
+            color: var(--color-primary);
+            margin-bottom: 15px;
+            text-align: center;
+            font-size: 1.1em;
+        }
+        
+        .log-entry {
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255, 105, 180, 0.2);
+        }
+        
+        .log-entry:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+        
+        .log-time {
+            color: var(--color-primary);
+            font-weight: 500;
+        }
+        
+        .log-status {
+            font-weight: bold;
+        }
+        
+        .status-ok {
+            color: var(--color-success);
+        }
+        
+        .status-error-log {
+            color: var(--color-error);
+        }
+
+        /* Progreso del pedido */
+        .progreso-pedido {
+            margin: 20px 0;
+        }
+        
+        .etapas {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+            margin-bottom: 10px;
+        }
+        
+        .etapas::before {
+            content: '';
+            position: absolute;
+            top: 15px;
+            left: 10%;
+            right: 10%;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.3);
+            z-index: 1;
+        }
+        
+        .etapa {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 2;
+        }
+        
+        .punto-etapa {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 5px;
+            font-size: 0.8em;
+        }
+        
+        .etapa.activa .punto-etapa {
+            background: var(--color-accent);
+            color: var(--color-text-dark);
+        }
+        
+        .etapa.completada .punto-etapa {
+            background: var(--color-success);
+            color: var(--color-text-light);
+        }
+        
+        .nombre-etapa {
+            font-size: 0.7em;
+            text-align: center;
+            opacity: 0.8;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                width: 95%;
+            }
+            
+            .back-button {
+                top: 15px;
+                left: 15px;
+                width: 40px;
+                height: 40px;
+            }
+            
+            .panel {
+                padding: 20px;
+            }
+            
+            .acciones-container {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <button class="back-button" id="backButton">
+        <i class="fas fa-arrow-left"></i>
+    </button>
+
+    <div class="container">
+
+        <div class="panel seguimiento-main">
+            <h3>🍦 Pedido: #00123</h3>
+            <div class="estado-pedido">
+                <i class="fas fa-motorcycle"></i>
+                <span>En ruta - Repartidor asignado</span>
+            </div>
+            <div class="tiempo-restante">
+                <i class="fas fa-clock"></i>
+                Llegada estimada: 15-20 min
+            </div>
+            
+            <div class="progreso-pedido">
+                <div class="etapas">
+                    <div class="etapa completada">
+                        <div class="punto-etapa">✓</div>
+                        <div class="nombre-etapa">Confirmado</div>
+                    </div>
+                    <div class="etapa completada">
+                        <div class="punto-etapa">✓</div>
+                        <div class="nombre-etapa">Preparando</div>
+                    </div>
+                    <div class="etapa activa">
+                        <div class="punto-etapa"><i class="fas fa-motorcycle"></i></div>
+                        <div class="nombre-etapa">En camino</div>
+                    </div>
+                    <div class="etapa">
+                        <div class="punto-etapa">🏠</div>
+                        <div class="nombre-etapa">Entregado</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel mapa-container">
+            <div class="mapa-simulado">
+                <div class="punto-repartidor"></div>
+                <div style="text-align: center;">
+                    <i class="fas fa-map-marker-alt" style="font-size: 2em; color: var(--color-primary); margin-bottom: 10px;"></i>
+                    <p style="color: var(--color-text-dark); font-weight: 500;">Seguimiento en tiempo real activo</p>
+                    <p style="color: var(--color-primary); font-size: 0.9em; margin: 5px 0 0 0;">Repartidor: Carlos M.</p>
+                </div>
+            </div>
+            
+            <div class="acciones-container">
+                <button class="btn-actualizar" id="btnActualizar">
+                    <i class="fas fa-sync-alt"></i> Actualizar ubicación
+                </button>
+                <button class="btn-reintentar" id="btnReintentar">
+                    <i class="fas fa-redo"></i> Reintentar conexión
+                </button>
+            </div>
+        </div>
+
+        <div class="status-message status-success" id="mensajeExito" style="display: none;">
+            <i class="fas fa-check-circle"></i>
+            <p style="margin: 10px 0 5px 0;">Ubicación actualizada correctamente</p>
+            <p style="font-size: 0.9em; margin: 0; opacity: 0.8;">Posición del repartidor sincronizada</p>
+        </div>
+
+        <div class="status-message status-error" id="mensajeError" style="display: none;">
+            <i class="fas fa-exclamation-triangle"></i>
+            <p style="margin: 10px 0 5px 0;">Error: Servicio de geolocalización no disponible</p>
+            <p style="font-size: 0.9em; margin: 0; opacity: 0.8;">Revisa tu conexión a internet</p>
+        </div>
+        
+        <div class="panel log-seguimiento">
+            <div class="log-title">Historial de Seguimiento</div>
+            <div class="log-entry">
+                <span class="log-time">14:05</span> - 
+                <span class="log-status status-ok">Ubicación actualizada - Repartidor en movimiento</span>
+            </div>
+            <div class="log-entry">
+                <span class="log-time">14:00</span> - 
+                <span class="log-status status-ok">Pedido recogido - En camino a tu ubicación</span>
+            </div>
+            <div class="log-entry">
+                <span class="log-time">13:50</span> - 
+                <span class="log-status status-error-log">Intento de actualización - Error de conexión</span>
+            </div>
+            <div class="log-entry">
+                <span class="log-time">13:45</span> - 
+                <span class="log-status status-ok">Pedido preparado - Esperando repartidor</span>
+            </div>
+            <div class="log-entry">
+                <span class="log-time">13:30</span> - 
+                <span class="log-status status-ok">Pedido confirmado - En preparación</span>
+            </div>
+        </div>
+        
+    </div>
+
+    <script>
+        // Función para el botón de regreso
+        document.getElementById('backButton').addEventListener('click', function() {
+            window.location.href = 'dashboard.html';
+        });
+
+        // Elementos del DOM
+        const btnActualizar = document.getElementById('btnActualizar');
+        const btnReintentar = document.getElementById('btnReintentar');
+        const mensajeExito = document.getElementById('mensajeExito');
+        const mensajeError = document.getElementById('mensajeError');
+        const puntoRepartidor = document.querySelector('.punto-repartidor');
+
+        // Ocultar mensajes inicialmente
+        mensajeExito.style.display = 'none';
+        mensajeError.style.display = 'none';
+
+        // Actualizar ubicación
+        btnActualizar.addEventListener('click', function() {
+            // Ocultar mensajes anteriores
+            mensajeExito.style.display = 'none';
+            mensajeError.style.display = 'none';
+            
+            // Cambiar estado del botón
+            const textoOriginal = btnActualizar.innerHTML;
+            btnActualizar.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Actualizando...';
+            btnActualizar.disabled = true;
+
+            // Simular actualización de ubicación
+            setTimeout(() => {
+                // 80% de éxito, 20% de fallo
+                const exito = Math.random() > 0.2;
+                
+                if (exito) {
+                    // Éxito en la actualización
+                    mensajeExito.style.display = 'block';
+                    mensajeError.style.display = 'none';
+                    
+                    // Animación del punto del repartidor
+                    puntoRepartidor.style.animation = 'none';
+                    setTimeout(() => {
+                        puntoRepartidor.style.animation = 'pulse 2s infinite';
+                    }, 10);
+                    
+                    // Cambiar botón a éxito
+                    btnActualizar.innerHTML = '<i class="fas fa-check"></i> Actualizado';
+                    btnActualizar.style.background = 'var(--color-success)';
+                } else {
+                    // Error en la actualización
+                    mensajeExito.style.display = 'none';
+                    mensajeError.style.display = 'block';
+                    
+                    // Cambiar botón a error
+                    btnActualizar.innerHTML = '<i class="fas fa-exclamation"></i> Error';
+                    btnActualizar.style.background = 'var(--color-error)';
+                }
+                
+                // Rehabilitar botón después de 3 segundos
+                setTimeout(() => {
+                    btnActualizar.innerHTML = textoOriginal;
+                    btnActualizar.style.background = 'var(--color-primary)';
+                    btnActualizar.disabled = false;
+                }, 3000);
+                
+            }, 1500);
+        });
+
+        // Reintentar conexión
+        btnReintentar.addEventListener('click', function() {
+            // Simular reintento de conexión
+            const textoOriginal = btnReintentar.innerHTML;
+            btnReintentar.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Conectando...';
+            btnReintentar.disabled = true;
+
+            setTimeout(() => {
+                btnReintentar.innerHTML = '<i class="fas fa-wifi"></i> Reconectado';
+                btnReintentar.style.background = 'var(--color-success)';
+                
+                setTimeout(() => {
+                    btnReintentar.innerHTML = textoOriginal;
+                    btnReintentar.style.background = 'var(--color-accent)';
+                    btnReintentar.disabled = false;
+                    
+                    // Mostrar mensaje de éxito
+                    mensajeExito.style.display = 'block';
+                    mensajeError.style.display = 'none';
+                }, 2000);
+            }, 1000);
+        });
+
+        // Simular movimiento del repartidor
+        function simularMovimiento() {
+            const movimiento = Math.random() * 20 - 10;
+            const posicionActual = puntoRepartidor.style.left ? 
+                parseInt(puntoRepartidor.style.left) : 50;
+            
+            let nuevaPosicion = posicionActual + movimiento;
+            if (nuevaPosicion < 10) nuevaPosicion = 10;
+            if (nuevaPosicion > 90) nuevaPosicion = 90;
+            
+            puntoRepartidor.style.left = nuevaPosicion + '%';
+            puntoRepartidor.style.top = (50 + Math.random() * 20 - 10) + '%';
+        }
+
+        // Iniciar simulación de movimiento cada 5 segundos
+        setInterval(simularMovimiento, 5000);
+    </script>
+</body>
+</html>
