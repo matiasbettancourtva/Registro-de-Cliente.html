@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Notificaciones - Frío Natural</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* VARIABLES DE COLOR - Tema Rosa Heladería */
+        :root {
+            --color-primary: #ff69b4;
+            --color-secondary: #ff85a1;
+            --color-accent: #ffd166;
+            --color-background: #ffffff;
+            --color-text-dark: #333333;
+            --color-text-light: #ffffff;
+            --color-success: #4CAF50;
+            --color-warning: #ff9800;
+            --color-error: #f44336;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #ffccd5 0%, #c9e9ff 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* BOTÓN DE REGRESO */
+        .back-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 100;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .back-button:hover {
+            background: white;
+            transform: translateX(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+        }
+        
+        .back-button i {
+            color: var(--color-primary);
+            font-size: 18px;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            width: 90%;
+            max-width: 600px;
+            margin-top: 60px;
+        }
+
+        .panel {
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        /* Título principal */
+        .titulo-principal {
+            text-align: center;
+            color: var(--color-primary);
+            margin-bottom: 10px;
+            font-size: 2em;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        .subtitulo {
+            text-align: center;
+            color: var(--color-text-dark);
+            margin-bottom: 30px;
+            opacity: 0.8;
+        }
+
+        /* Gestión de notificaciones */
+        .gestion-notificaciones {
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+            color: var(--color-text-light);
+            border-left: 5px solid var(--color-accent);
+        }
+
+        .gestion-notificaciones h3 {
+            margin: 0 0 15px 0;
+            font-size: 1.4em;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+        }
+
+        .info-pedido {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+        }
+
+        .estado-actual {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 15px;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .botones-accion {
+            display: flex;
+            gap: 15px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .botones-accion button {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-ver { 
+            background: var(--color-accent);
+            color: var(--color-text-dark);
+        }
+        
+        .btn-ver:hover {
+            background: #ffc145;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(255, 209, 102, 0.4);
+        }
+        
+        .btn-refrescar { 
+            background: var(--color-background);
+            color: var(--color-primary);
+        }
+        
+        .btn-refrescar:hover {
+            background: rgba(255, 255, 255, 0.9);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(255, 255, 255, 0.4);
+        }
+        
+        .btn-reintentar { 
+            background: var(--color-error);
+            color: var(--color-text-light);
+        }
+        
+        .btn-reintentar:hover {
+            background: #d32f2f;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(244, 67, 54, 0.4);
+        }
+
+        /* Notificación enviada */
+        .notificacion-enviada {
+            background: rgba(76, 175, 80, 0.1);
+            color: #2e7d32;
+            border: 2px solid var(--color-success);
+            box-shadow: 0 4px 12px rgba(76, 175, 80, 0.2);
+        }
+
+        .notificacion-enviada:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Error de servicio */
+        .error-service {
+            background: rgba(244, 67, 54, 0.1);
+            color: #c62828;
+            border: 2px solid var(--color-error);
+            box-shadow: 0 4px 12px rgba(244, 67, 54, 0.2);
+        }
+
+        .error-service:hover {
+            transform: translateY(-2px);
+        }
+
+        .error-service h4 {
+            margin: 0 0 10px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Lista de notificaciones */
+        .lista-notificaciones {
+            background: var(--color-background);
+            border: 2px solid var(--color-secondary);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .lista-notificaciones h4 {
+            color: var(--color-primary);
+            margin: 0 0 20px 0;
+            font-size: 1.3em;
+            text-align: center;
+        }
+
+        .lista-notificaciones ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .lista-notificaciones li {
+            padding: 15px;
+            margin-bottom: 10px;
+            background: rgba(255, 105, 180, 0.05);
+            border-radius: 8px;
+            border-left: 4px solid var(--color-primary);
+            transition: all 0.3s ease;
+        }
+
+        .lista-notificaciones li:hover {
+            background: rgba(255, 105, 180, 0.1);
+            transform: translateX(5px);
+        }
+
+        .lista-notificaciones li:last-child {
+            margin-bottom: 0;
+        }
+
+        .hora-notificacion {
+            font-weight: bold;
+            color: var(--color-primary);
+            margin-right: 10px;
+        }
+
+        /* Estados dinámicos */
+        .mensaje-oculto {
+            display: none;
+        }
+
+        .animacion-notificacion {
+            animation: notificacionPulse 2s ease-in-out;
+        }
+
+        @keyframes notificacionPulse {
+            0% { transform: scale(0.95); opacity: 0.7; }
+            50% { transform: scale(1.02); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* Indicador de estado */
+        .indicador-estado {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.9em;
+            margin-left: 10px;
+        }
+
+        .estado-preparacion {
+            background: rgba(255, 152, 0, 0.2);
+            color: #e65100;
+        }
+
+        .estado-enviado {
+            background: rgba(76, 175, 80, 0.2);
+            color: #2e7d32;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                width: 95%;
+            }
+            
+            .back-button {
+                top: 15px;
+                left: 15px;
+                width: 40px;
+                height: 40px;
+            }
+            
+            .panel {
+                padding: 20px;
+            }
+            
+            .botones-accion {
+                flex-direction: column;
+            }
+            
+            .botones-accion button {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <button class="back-button" id="backButton">
+        <i class="fas fa-arrow-left"></i>
+    </button>
+
+    <div class="container">
+
+        <h1 class="titulo-principal">🔔 Gestión de Notificaciones</h1>
+        <p class="subtitulo">Mantente informado sobre el estado de tu pedido</p>
+
+        <div class="panel gestion-notificaciones">
+            <h3><i class="fas fa-shopping-bag"></i> Pedido: #00123</h3>
+            <div class="info-pedido">
+                <p><strong>Última actualización:</strong> 07/10/2025 13:00</p>
+                <p><strong>Cliente:</strong> María González</p>
+                <p><strong>Total:</strong> $45.000</p>
+            </div>
+            
+            <div class="estado-actual">
+                <i class="fas fa-clock"></i>
+                <span>Estado actual:</span>
+                <span class="indicador-estado estado-preparacion">
+                    <i class="fas fa-utensils"></i> En Preparación
+                </span>
+            </div>
+
+            <div class="botones-accion">
+                <button class="btn-ver" id="btnVerNotificaciones">
+                    <i class="fas fa-bell"></i> Ver notificaciones
+                </button>
+                <button class="btn-refrescar" id="btnRefrescar">
+                    <i class="fas fa-sync-alt"></i> Actualizar estado
+                </button>
+            </div>
+
+            <h4><i class="fas fa-history"></i> Notificaciones recientes:</h4>
+            <div class="botones-accion">
+                <button class="btn-reintentar" id="btnReintentar">
+                    <i class="fas fa-redo"></i> Reintentar envío
+                </button>
+            </div>
+        </div>
+
+        <div class="panel notificacion-enviada" id="notificacionEnviada">
+            <i class="fas fa-check-circle"></i>
+            <p style="margin: 10px 0 5px 0; font-size: 1.1em;"><strong>Notificación enviada al correo del cliente</strong></p>
+            <p style="margin: 0; font-size: 0.9em; opacity: 0.8;">El cliente ha sido notificado sobre el estado actual del pedido</p>
+        </div>
+
+        <div class="panel error-service mensaje-oculto" id="errorService">
+            <h4>
+                <i class="fas fa-exclamation-triangle"></i>
+                Error: Servicio de notificaciones no disponible
+            </h4>
+            <p style="margin: 10px 0 0 0; font-size: 0.9em;">
+                <strong>Acciones sugeridas:</strong> Reintentar envío / Revisar logs del sistema
+            </p>
+        </div>
+
+        <div class="panel lista-notificaciones" id="listaNotificaciones">
+            <h4><i class="fas fa-list"></i> Historial de Notificaciones</h4>
+            <ul>
+                <li>
+                    <span class="hora-notificacion">13:00</span>
+                    <span class="indicador-estado estado-preparacion">En preparación</span>
+                    - Pedido #00123: Tu helado está siendo preparado
+                </li>
+                <li>
+                    <span class="hora-notificacion">12:40</span>
+                    <span class="indicador-estado estado-enviado">Enviado</span>
+                    - Pago recibido y confirmado exitosamente
+                </li>
+                <li>
+                    <span class="hora-notificacion">12:35</span>
+                    <span class="indicador-estado estado-enviado">Enviado</span>
+                    - Pedido #00123 recibido y en proceso de verificación
+                </li>
+            </ul>
+        </div>
+        
+    </div>
+
+    <script>
+        // Función para el botón de regreso
+        document.getElementById('backButton').addEventListener('click', function() {
+            window.location.href = 'dashboard.html';
+        });
+
+        // Elementos del DOM
+        const btnVerNotificaciones = document.getElementById('btnVerNotificaciones');
+        const btnRefrescar = document.getElementById('btnRefrescar');
+        const btnReintentar = document.getElementById('btnReintentar');
+        const notificacionEnviada = document.getElementById('notificacionEnviada');
+        const errorService = document.getElementById('errorService');
+        const listaNotificaciones = document.getElementById('listaNotificaciones');
+
+        // Inicialmente mostrar solo la notificación enviada
+        notificacionEnviada.style.display = 'block';
+        errorService.style.display = 'none';
+        listaNotificaciones.style.display = 'none';
+
+        // Ver notificaciones
+        btnVerNotificaciones.addEventListener('click', function() {
+            if (listaNotificaciones.style.display === 'none') {
+                listaNotificaciones.style.display = 'block';
+                listaNotificaciones.classList.add('animacion-notificacion');
+                btnVerNotificaciones.innerHTML = '<i class="fas fa-eye-slash"></i> Ocultar notificaciones';
+            } else {
+                listaNotificaciones.style.display = 'none';
+                btnVerNotificaciones.innerHTML = '<i class="fas fa-bell"></i> Ver notificaciones';
+            }
+            
+            // Remover animación después de completarse
+            setTimeout(() => {
+                listaNotificaciones.classList.remove('animacion-notificacion');
+            }, 2000);
+        });
+
+        // Refrescar estado
+        btnRefrescar.addEventListener('click', function() {
+            const textoOriginal = btnRefrescar.innerHTML;
+            btnRefrescar.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Actualizando...';
+            btnRefrescar.disabled = true;
+
+            // Simular actualización
+            setTimeout(() => {
+                // 90% de éxito, 10% de fallo
+                const exito = Math.random() > 0.1;
+                
+                if (exito) {
+                    notificacionEnviada.style.display = 'block';
+                    notificacionEnviada.classList.add('animacion-notificacion');
+                    errorService.style.display = 'none';
+                    
+                    btnRefrescar.innerHTML = '<i class="fas fa-check"></i> Actualizado';
+                    btnRefrescar.style.background = 'var(--color-success)';
+                    btnRefrescar.style.color = 'var(--color-text-light)';
+                } else {
+                    notificacionEnviada.style.display = 'none';
+                    errorService.style.display = 'block';
+                    errorService.classList.add('animacion-notificacion');
+                    
+                    btnRefrescar.innerHTML = '<i class="fas fa-exclamation"></i> Error';
+                    btnRefrescar.style.background = 'var(--color-error)';
+                    btnRefrescar.style.color = 'var(--color-text-light)';
+                }
+                
+                // Rehabilitar botón después de 3 segundos
+                setTimeout(() => {
+                    btnRefrescar.innerHTML = textoOriginal;
+                    btnRefrescar.style.background = 'var(--color-background)';
+                    btnRefrescar.style.color = 'var(--color-primary)';
+                    btnRefrescar.disabled = false;
+                    
+                    // Remover animaciones
+                    notificacionEnviada.classList.remove('animacion-notificacion');
+                    errorService.classList.remove('animacion-notificacion');
+                }, 3000);
+                
+            }, 1500);
+        });
+
+        // Reintentar envío
+        btnReintentar.addEventListener('click', function() {
+            const textoOriginal = btnReintentar.innerHTML;
+            btnReintentar.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Reintentando...';
+            btnReintentar.disabled = true;
+
+            // Simular reintento
+            setTimeout(() => {
+                // 70% de éxito, 30% de fallo
+                const exito = Math.random() > 0.3;
+                
+                if (exito) {
+                    notificacionEnviada.style.display = 'block';
+                    notificacionEnviada.classList.add('animacion-notificacion');
+                    errorService.style.display = 'none';
+                    
+                    btnReintentar.innerHTML = '<i class="fas fa-check"></i> Éxito';
+                    btnReintentar.style.background = 'var(--color-success)';
+                } else {
+                    notificacionEnviada.style.display = 'none';
+                    errorService.style.display = 'block';
+                    errorService.classList.add('animacion-notificacion');
+                    
+                    btnReintentar.innerHTML = '<i class="fas fa-times"></i> Falló';
+                    btnReintentar.style.background = '#b71c1c';
+                }
+                
+                // Rehabilitar botón después de 3 segundos
+                setTimeout(() => {
+                    btnReintentar.innerHTML = textoOriginal;
+                    btnReintentar.style.background = 'var(--color-error)';
+                    btnReintentar.disabled = false;
+                    
+                    // Remover animaciones
+                    notificacionEnviada.classList.remove('animacion-notificacion');
+                    errorService.classList.remove('animacion-notificacion');
+                }, 3000);
+                
+            }, 2000);
+        });
+    </script>
+</body>
+</html>
