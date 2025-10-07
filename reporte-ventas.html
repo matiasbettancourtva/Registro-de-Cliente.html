@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reporte de Ventas - Frío Natural</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* VARIABLES DE COLOR - Tema Rosa Heladería */
+        :root {
+            --color-primary: #ff69b4;
+            --color-secondary: #ff85a1;
+            --color-accent: #ffd166;
+            --color-background: #ffffff;
+            --color-text-dark: #333333;
+            --color-text-light: #ffffff;
+            --color-success: #4CAF50;
+            --color-warning: #ff9800;
+            --color-error: #f44336;
+            --color-info: #2196F3;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #ffccd5 0%, #c9e9ff 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* BOTÓN DE REGRESO */
+        .back-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 100;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .back-button:hover {
+            background: white;
+            transform: translateX(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+        }
+        
+        .back-button i {
+            color: var(--color-primary);
+            font-size: 18px;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            width: 90%;
+            max-width: 500px;
+            margin-top: 60px;
+        }
+
+        .panel {
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .panel:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Bloque principal del título */
+        .reporte-header {
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+            color: var(--color-text-light);
+            border-left: 5px solid var(--color-accent);
+            text-align: center;
+        }
+
+        .reporte-header h2 {
+            margin: 0;
+            font-size: 1.8em;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+        }
+
+        .subtitulo-reporte {
+            margin: 10px 0 0 0;
+            opacity: 0.9;
+            font-size: 1em;
+        }
+
+        /* Selector de fecha */
+        .selector-fecha {
+            background: var(--color-background);
+            border: 2px solid var(--color-secondary);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+
+        .selector-fecha h3 {
+            color: var(--color-primary);
+            margin: 0 0 15px 0;
+            font-size: 1.2em;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .controles-fecha {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .controles-fecha input {
+            padding: 12px;
+            border: 2px solid var(--color-secondary);
+            border-radius: 8px;
+            font-size: 1em;
+            text-align: center;
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .controles-fecha button {
+            padding: 12px 20px;
+            background: var(--color-primary);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .controles-fecha button:hover {
+            background: var(--color-secondary);
+            transform: translateY(-2px);
+        }
+
+        /* Bloque de acción del botón */
+        .reporte-accion {
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+            padding: 25px;
+            text-align: center;
+            color: var(--color-text-light);
+        }
+        
+        .reporte-accion button {
+            padding: 15px 30px;
+            background: var(--color-background);
+            color: var(--color-primary);
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1.1em;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin: 0 auto;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .reporte-accion button:hover {
+            background: var(--color-accent);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Bloque de resultados de ventas */
+        .reporte-resultados {
+            background: var(--color-background);
+            border: 2px solid var(--color-secondary);
+            padding: 25px;
+        }
+        
+        .reporte-resultados h3 {
+            color: var(--color-primary);
+            margin: 0 0 20px 0;
+            font-size: 1.3em;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .estadisticas-ventas {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .estadistica-venta {
+            background: rgba(255, 105, 180, 0.05);
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            border: 2px solid var(--color-secondary);
+            transition: all 0.3s ease;
+        }
+
+        .estadistica-venta:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .valor-estadistica {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: var(--color-primary);
+            margin: 10px 0 5px 0;
+        }
+
+        .etiqueta-estadistica {
+            font-size: 0.9em;
+            color: #888;
+            font-weight: 500;
+        }
+
+        .tendencia-venta {
+            font-size: 0.8em;
+            margin-top: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+
+        .tendencia-positiva {
+            color: var(--color-success);
+        }
+
+        .tendencia-negativa {
+            color: var(--color-error);
+        }
+
+        .productos-top {
+            margin-top: 20px;
+        }
+
+        .productos-top h4 {
+            color: var(--color-primary);
+            margin: 0 0 15px 0;
+            font-size: 1.1em;
+            text-align: center;
+        }
+
+        .lista-productos {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .item-producto {
+            padding: 12px;
+            margin-bottom: 10px;
+            background: rgba(255, 105, 180, 0.05);
+            border-radius: 8px;
+            border-left: 4px solid var(--color-primary);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .item-producto:hover {
+            background: rgba(255, 105, 180, 0.1);
+            transform: translateX(5px);
+        }
+
+        .item-producto:last-child {
+            margin-bottom: 0;
+        }
+
+        .posicion-producto {
+            font-weight: bold;
+            color: var(--color-primary);
+            width: 25px;
+            text-align: center;
+        }
+
+        .icono-producto {
+            font-size: 1.3em;
+            color: var(--color-primary);
+            width: 30px;
+            text-align: center;
+        }
+
+        .info-producto {
+            flex: 1;
+        }
+
+        .nombre-producto {
+            font-weight: bold;
+            color: var(--color-text-dark);
+            font-size: 1em;
+        }
+
+        .ventas-producto {
+            font-size: 0.9em;
+            color: #888;
+        }
+
+        /* Log de reportes */
+        .log-reportes {
+            background: var(--color-accent);
+            color: var(--color-text-dark);
+            border: 2px solid #ffc145;
+            font-size: 0.9em;
+            padding: 25px;
+            border-radius: 15px;
+        }
+
+        .log-reportes h4 {
+            margin-top: 0;
+            color: var(--color-primary);
+            font-size: 1.2em;
+            text-align: center;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .entrada-log {
+            margin-bottom: 12px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid rgba(255, 105, 180, 0.3);
+        }
+
+        .entrada-log:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        .fecha-log {
+            color: var(--color-primary);
+            font-weight: bold;
+            margin-right: 8px;
+        }
+
+        .log-exitoso {
+            color: var(--color-success);
+            font-weight: 500;
+        }
+
+        .log-error {
+            color: var(--color-error);
+            font-weight: 500;
+        }
+
+        .log-info {
+            color: var(--color-info);
+            font-weight: 500;
+        }
+
+        /* Estados dinámicos */
+        .mensaje-oculto {
+            display: none;
+        }
+
+        .animacion-reporte {
+            animation: reportePulse 2s ease-in-out;
+        }
+
+        @keyframes reportePulse {
+            0% { transform: scale(0.95); opacity: 0.7; }
+            50% { transform: scale(1.02); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* Indicador de carga */
+        .cargando-reporte {
+            text-align: center;
+            padding: 20px;
+            color: var(--color-primary);
+            font-weight: bold;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(255, 105, 180, 0.3);
+            border-top: 4px solid var(--color-primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Opciones de exportación */
+        .opciones-exportar {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        .btn-exportar {
+            padding: 8px 15px;
+            background: var(--color-background);
+            color: var(--color-primary);
+            border: 2px solid var(--color-primary);
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.9em;
+        }
+
+        .btn-exportar:hover {
+            background: var(--color-primary);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                width: 95%;
+            }
+            
+            .back-button {
+                top: 15px;
+                left: 15px;
+                width: 40px;
+                height: 40px;
+            }
+            
+            .panel {
+                padding: 20px;
+            }
+            
+            .estadisticas-ventas {
+                grid-template-columns: 1fr;
+            }
+            
+            .controles-fecha {
+                flex-direction: column;
+            }
+            
+            .controles-fecha input {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <button class="back-button" id="backButton">
+        <i class="fas fa-arrow-left"></i>
+    </button>
+
+    <div class="container">
+
+        <div class="panel reporte-header">
+            <h2>📊 Reporte de Ventas</h2>
+            <p class="subtitulo-reporte">Análisis detallado del rendimiento de ventas</p>
+        </div>
+
+        <div class="selector-fecha">
+            <h3><i class="fas fa-calendar-alt"></i> Seleccionar Período</h3>
+            <div class="controles-fecha">
+                <input type="date" id="fechaInicio" value="2025-09-29">
+                <span>a</span>
+                <input type="date" id="fechaFin" value="2025-09-29">
+                <button id="btnAplicarFechas">
+                    <i class="fas fa-check"></i> Aplicar
+                </button>
+            </div>
+        </div>
+
+        <div class="panel reporte-accion">
+            <button id="btnGenerarReporte">
+                <i class="fas fa-chart-bar"></i> Generar Reporte Completo
+            </button>
+        </div>
+
+        <div class="panel cargando-reporte mensaje-oculto" id="cargandoReporte">
+            <div class="spinner"></div>
+            <p>Generando reporte de ventas...</p>
+        </div>
+
+        <div class="panel reporte-resultados">
+            <h3><i class="fas fa-chart-line"></i> Estadísticas del Día</h3>
+            
+            <div class="estadisticas-ventas">
+                <div class="estadistica-venta">
+                    <i class="fas fa-shopping-cart" style="color: var(--color-primary); font-size: 1.5em;"></i>
+                    <div class="valor-estadistica" id="ventasDia">142</div>
+                    <div class="etiqueta-estadistica">Ventas Totales</div>
+                    <div class="tendencia-venta tendencia-positiva">
+                        <i class="fas fa-arrow-up"></i> 18% vs ayer
+                    </div>
+                </div>
+                
+                <div class="estadistica-venta">
+                    <i class="fas fa-money-bill-wave" style="color: var(--color-primary); font-size: 1.5em;"></i>
+                    <div class="valor-estadistica" id="ingresosDia">$1.458.250</div>
+                    <div class="etiqueta-estadistica">Ingresos Totales</div>
+                    <div class="tendencia-venta tendencia-positiva">
+                        <i class="fas fa-arrow-up"></i> 22% vs ayer
+                    </div>
+                </div>
+                
+                <div class="estadistica-venta">
+                    <i class="fas fa-user-check" style="color: var(--color-primary); font-size: 1.5em;"></i>
+                    <div class="valor-estadistica" id="clientesDia">89</div>
+                    <div class="etiqueta-estadistica">Clientes Atendidos</div>
+                    <div class="tendencia-venta tendencia-positiva">
+                        <i class="fas fa-arrow-up"></i> 12% vs ayer
+                    </div>
+                </div>
+                
+                <div class="estadistica-venta">
+                    <i class="fas fa-percentage" style="color: var(--color-primary); font-size: 1.5em;"></i>
+                    <div class="valor-estadistica" id="ticketPromedio">$16.385</div>
+                    <div class="etiqueta-estadistica">Ticket Promedio</div>
+                    <div class="tendencia-venta tendencia-positiva">
+                        <i class="fas fa-arrow-up"></i> 8% vs ayer
+                    </div>
+                </div>
+            </div>
+            
+            <div class="productos-top">
+                <h4><i class="fas fa-trophy"></i> Productos Más Vendidos</h4>
+                <ul class="lista-productos">
+                    <li class="item-producto">
+                        <span class="posicion-producto">1</span>
+                        <span class="icono-producto">🍦</span>
+                        <div class="info-producto">
+                            <div class="nombre-producto">Helado de Vainilla Artesanal</div>
+                            <div class="ventas-producto">48 ventas - $624.000</div>
+                        </div>
+                    </li>
+                    <li class="item-producto">
+                        <span class="posicion-producto">2</span>
+                        <span class="icono-producto">🍫</span>
+                        <div class="info-producto">
+                            <div class="nombre-producto">Helado de Chocolate Premium</div>
+                            <div class="ventas-producto">36 ventas - $468.000</div>
+                        </div>
+                    </li>
+                    <li class="item-producto">
+                        <span class="posicion-producto">3</span>
+                        <span class="icono-producto">🍓</span>
+                        <div class="info-producto">
+                            <div class="nombre-producto">Helado de Fresa Natural</div>
+                            <div class="ventas-producto">29 ventas - $377.000</div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="opciones-exportar">
+                <button class="btn-exportar">
+                    <i class="fas fa-file-pdf"></i> Exportar PDF
+                </button>
+                <button class="btn-exportar">
+                    <i class="fas fa-file-excel"></i> Exportar Excel
+                </button>
+                <button class="btn-exportar">
+                    <i class="fas fa-print"></i> Imprimir
+                </button>
+            </div>
+        </div>
+        
+        <div class="panel log-reportes">
+            <h4><i class="fas fa-history"></i> Historial de Reportes</h4>
+            <div class="entrada-log">
+                <span class="fecha-log">14:00</span>
+                <span class="log-exitoso">Reporte generado correctamente</span>
+            </div>
+            <div class="entrada-log">
+                <span class="fecha-log">13:45</span>
+                <span class="log-info">Período cambiado: 2025-09-29</span>
+            </div>
+            <div class="entrada-log">
+                <span class="fecha-log">13:30</span>
+                <span class="log-error">Error al generar reporte (timeout)</span>
+            </div>
+            <div class="entrada-log">
+                <span class="fecha-log">13:15</span>
+                <span class="log-exitoso">Datos exportados a Excel</span>
+            </div>
+            <div class="entrada-log">
+                <span class="fecha-log">13:00</span>
+                <span class="log-exitoso">Reporte matutino generado</span>
+            </div>
+        </div>
+        
+    </div>
+
+    <script>
+        // Función para el botón de regreso
+        document.getElementById('backButton').addEventListener('click', function() {
+            window.location.href = 'dashboard.html';
+        });
+
+        // Elementos del DOM
+        const btnGenerarReporte = document.getElementById('btnGenerarReporte');
+        const btnAplicarFechas = document.getElementById('btnAplicarFechas');
+        const cargandoReporte = document.getElementById('cargandoReporte');
+        const logReportes = document.querySelector('.log-reportes');
+        const fechaInicio = document.getElementById('fechaInicio');
+        const fechaFin = document.getElementById('fechaFin');
+
+        // Establecer fecha actual como valor por defecto
+        const hoy = new Date().toISOString().split('T')[0];
+        fechaInicio.value = hoy;
+        fechaFin.value = hoy;
+
+        // Aplicar filtro de fechas
+        btnAplicarFechas.addEventListener('click', function() {
+            const inicio = fechaInicio.value;
+            const fin = fechaFin.value;
+            
+            // Agregar entrada al log
+            const nuevaEntrada = document.createElement('div');
+            nuevaEntrada.className = 'entrada-log';
+            nuevaEntrada.innerHTML = `
+                <span class="fecha-log">${new Date().toLocaleTimeString('es-ES', {hour: '2-digit', minute:'2-digit'})}</span>
+                <span class="log-info">Período cambiado: ${inicio} a ${fin}</span>
+            `;
+            logReportes.insertBefore(nuevaEntrada, logReportes.querySelector('.entrada-log'));
+            
+            alert(`📅 Período seleccionado:\n\nDesde: ${inicio}\nHasta: ${fin}\n\nLos datos se actualizarán al generar el reporte.`);
+        });
+
+        // Generar reporte
+        btnGenerarReporte.addEventListener('click', function() {
+            const textoOriginal = btnGenerarReporte.innerHTML;
+            const inicio = fechaInicio.value;
+            const fin = fechaFin.value;
+            
+            // Cambiar estado del botón
+            btnGenerarReporte.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generando...';
+            btnGenerarReporte.disabled = true;
+            cargandoReporte.style.display = 'block';
+
+            // Simular generación de reporte
+            setTimeout(() => {
+                // 90% de éxito, 10% de fallo
+                const exito = Math.random() > 0.1;
+                
+                if (exito) {
+                    // Generación exitosa
+                    btnGenerarReporte.innerHTML = '<i class="fas fa-check"></i> ¡Reporte Listo!';
+                    btnGenerarReporte.style.background = 'var(--color-success)';
+                    btnGenerarReporte.style.color = 'var(--color-text-light)';
+                    
+                    // Actualizar valores con datos simulados
+                    const ventasNuevas = Math.floor(142 + Math.random() * 30);
+                    const ingresosNuevos = Math.floor(1458250 + Math.random() * 200000);
+                    const clientesNuevos = Math.floor(89 + Math.random() * 15);
+                    const ticketNuevo = Math.floor(16385 + Math.random() * 1000);
+                    
+                    document.getElementById('ventasDia').textContent = ventasNuevos;
+                    document.getElementById('ingresosDia').textContent = `$${ingresosNuevos.toLocaleString()}`;
+                    document.getElementById('clientesDia').textContent = clientesNuevos;
+                    document.getElementById('ticketPromedio').textContent = `$${ticketNuevo.toLocaleString()}`;
+                    
+                    // Agregar entrada al log
+                    const nuevaEntrada = document.createElement('div');
+                    nuevaEntrada.className = 'entrada-log';
+                    nuevaEntrada.innerHTML = `
+                        <span class="fecha-log">${new Date().toLocaleTimeString('es-ES', {hour: '2-digit', minute:'2-digit'})}</span>
+                        <span class="log-exitoso">Reporte generado correctamente (${inicio} - ${fin})</span>
+                    `;
+                    logReportes.insertBefore(nuevaEntrada, logReportes.querySelector('.entrada-log'));
+                    
+                    // Animación de actualización
+                    document.querySelector('.reporte-resultados').classList.add('animacion-reporte');
+                    setTimeout(() => {
+                        document.querySelector('.reporte-resultados').classList.remove('animacion-reporte');
+                    }, 2000);
+                    
+                    // Mostrar resumen después de 1 segundo
+                    setTimeout(() => {
+                        alert(`📊 Resumen del Reporte (${inicio} - ${fin}):\n\n✅ Ventas totales: ${ventasNuevos}\n💰 Ingresos: $${ingresosNuevos.toLocaleString()}\n👥 Clientes: ${clientesNuevos}\n📈 Ticket promedio: $${ticketNuevo.toLocaleString()}`);
+                    }, 1000);
+                } else {
+                    // Error en generación
+                    btnGenerarReporte.innerHTML = '<i class="fas fa-redo"></i> Reintentar';
+                    btnGenerarReporte.style.background = 'var(--color-error)';
+                    btnGenerarReporte.style.color = 'var(--color-text-light)';
+                    
+                    // Agregar entrada al log
+                    const nuevaEntrada = document.createElement('div');
+                    nuevaEntrada.className = 'entrada-log';
+                    nuevaEntrada.innerHTML = `
+                        <span class="fecha-log">${new Date().toLocaleTimeString('es-ES', {hour: '2-digit', minute:'2-digit'})}</span>
+                        <span class="log-error">Error al generar reporte (servidor no disponible)</span>
+                    `;
+                    logReportes.insertBefore(nuevaEntrada, logReportes.querySelector('.entrada-log'));
+                }
+                
+                // Rehabilitar botón después de 3 segundos
+                setTimeout(() => {
+                    btnGenerarReporte.innerHTML = textoOriginal;
+                    btnGenerarReporte.style.background = 'var(--color-background)';
+                    btnGenerarReporte.style.color = 'var(--color-primary)';
+                    btnGenerarReporte.disabled = false;
+                    cargandoReporte.style.display = 'none';
+                }, 3000);
+                
+            }, 2500);
+        });
+
+        // Efectos interactivos en los productos
+        const productosItems = document.querySelectorAll('.item-producto');
+        productosItems.forEach(item => {
+            item.addEventListener('click', function() {
+                const nombreProducto = this.querySelector('.nombre-producto').textContent;
+                const ventasProducto = this.querySelector('.ventas-producto').textContent;
+                const posicion = this.querySelector('.posicion-producto').textContent;
+                
+                alert(`🏆 Producto #${posicion}\n\n${nombreProducto}\n\n${ventasProducto}\n\n📊 Representa el ${Math.floor(30 + Math.random() * 15)}% de las ventas totales`);
+            });
+        });
+
+        // Botones de exportación
+        const botonesExportar = document.querySelectorAll('.btn-exportar');
+        botonesExportar.forEach(boton => {
+            boton.addEventListener('click', function() {
+                const tipo = this.querySelector('i').className.includes('pdf') ? 'PDF' : 
+                            this.querySelector('i').className.includes('excel') ? 'Excel' : 'Impresión';
+                
+                // Agregar entrada al log
+                const nuevaEntrada = document.createElement('div');
+                nuevaEntrada.className = 'entrada-log';
+                nuevaEntrada.innerHTML = `
+                    <span class="fecha-log">${new Date().toLocaleTimeString('es-ES', {hour: '2-digit', minute:'2-digit'})}</span>
+                    <span class="log-info">Reporte exportado a ${tipo}</span>
+                `;
+                logReportes.insertBefore(nuevaEntrada, logReportes.querySelector('.entrada-log'));
+                
+                alert(`📤 Exportando reporte a ${tipo}...\n\nEl archivo se descargará automáticamente cuando esté listo.`);
+            });
+        });
+    </script>
+</body>
+</html>
