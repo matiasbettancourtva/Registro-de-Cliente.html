@@ -3,17 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard - Frío Natural Heladería</title>
+  <title>Iniciar Sesión - Frío Natural Heladería</title>
   <style>
-    /* VARIABLES DE COLOR */
+    /* VARIABLES DE COLOR - Tema Heladería Mejorado */
     :root {
-      --color-primary: #ff6b9d;
-      --color-secondary: #ff9ebb;
-      --color-accent: #ffd166;
+      --color-primary: #ff6b9d; /* Rosa principal más vibrante */
+      --color-secondary: #ff9ebb; /* Rosa secundario */
+      --color-accent: #ffd166; /* Amarillo para acentos */
       --color-background: #ffffff;
-      --color-sidebar: #2c3e50;
       --color-text-dark: #333333;
       --color-text-light: #ffffff;
+      --color-success: #4CAF50;
+      --color-error: #f44336;
     }
 
     * {
@@ -23,361 +24,376 @@
     }
 
     body {
-      font-family: 'Poppins', 'Segoe UI', sans-serif;
-      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-      min-height: 100vh;
-    }
-
-    /* LAYOUT PRINCIPAL */
-    .dashboard-container {
+      font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #ff9ebb 0%, #ff6b9d 50%, #ffd166 100%);
+      background-size: cover;
+      background-attachment: fixed;
       display: flex;
+      justify-content: center;
+      align-items: center;
       min-height: 100vh;
+      padding: 20px;
     }
 
-    /* SIDEBAR */
-    .sidebar {
-      width: 280px;
-      background: var(--color-sidebar);
-      color: var(--color-text-light);
+    /* BOTÓN DE INICIO RÁPIDO */
+    .quick-access {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 1000;
+    }
+
+    .btn-inicio {
+      background: var(--color-background);
+      color: var(--color-primary);
+      border: 2px solid var(--color-primary);
+      padding: 12px 24px;
+      border-radius: 25px;
+      font-weight: 600;
+      cursor: pointer;
       transition: all 0.3s ease;
-      box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      text-decoration: none;
+      display: inline-block;
     }
 
-    .sidebar-header {
-      padding: 30px 20px;
-      background: rgba(255, 255, 255, 0.1);
+    .btn-inicio:hover {
+      background: var(--color-primary);
+      color: var(--color-background);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(255, 107, 157, 0.4);
+    }
+
+    .container {
+      display: flex;
+      background: var(--color-background);
+      border-radius: 20px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+      overflow: hidden;
+      width: 1000px;
+      max-width: 95%;
+      min-height: 600px;
+      position: relative;
+    }
+
+    /* SECCIÓN PROMOCIONAL MEJORADA */
+    .promo-section {
+      flex: 1;
+      background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      color: var(--color-text-light);
+      padding: 40px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .promo-section::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255,255,255,0.1) 1%, transparent 1%);
+      background-size: 50px 50px;
+      animation: float 20s linear infinite;
+    }
+
+    @keyframes float {
+      0% { transform: translate(0, 0) rotate(0deg); }
+      100% { transform: translate(-50px, -50px) rotate(360deg); }
+    }
+
+    .logo-container {
       text-align: center;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      margin-bottom: 30px;
+      z-index: 2;
     }
 
     .logo {
-      font-size: 2.5em;
-      margin-bottom: 10px;
-    }
-
-    .brand-name {
-      font-size: 1.5em;
-      font-weight: 700;
-      color: var(--color-text-light);
-    }
-
-    .brand-subtitle {
-      font-size: 0.9em;
-      opacity: 0.8;
-      margin-top: 5px;
-    }
-
-    /* MENÚ DE NAVEGACIÓN */
-    .nav-menu {
-      padding: 20px 0;
-    }
-
-    .nav-category {
-      margin-bottom: 10px;
-    }
-
-    .category-header {
-      padding: 15px 20px;
-      font-weight: 600;
-      font-size: 0.9em;
-      color: var(--color-accent);
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      border-left: 4px solid transparent;
-      cursor: pointer;
-      transition: all 0.3s ease;
+      width: 120px;
+      height: 120px;
+      background: var(--color-background);
+      border-radius: 50%;
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      font-size: 48px;
     }
 
-    .category-header:hover {
-      background: rgba(255, 255, 255, 0.05);
-      border-left-color: var(--color-accent);
+    .promo-title {
+      font-size: 2.8em;
+      font-weight: 700;
+      margin-bottom: 15px;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
     }
 
-    .category-header.active {
-      background: rgba(255, 255, 255, 0.1);
-      border-left-color: var(--color-primary);
+    .promo-subtitle {
+      font-size: 1.3em;
+      font-weight: 300;
+      opacity: 0.9;
+      text-align: center;
+      line-height: 1.5;
     }
 
-    .category-icon {
-      transition: transform 0.3s ease;
+    /* SECCIÓN DEL FORMULARIO MEJORADA */
+    .form-section {
+      flex: 1;
+      padding: 50px 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
     }
 
-    .category-header.active .category-icon {
-      transform: rotate(180deg);
+    .form-header {
+      text-align: center;
+      margin-bottom: 40px;
     }
 
-    .nav-items {
-      max-height: 0;
-      overflow: hidden;
-      transition: max-height 0.3s ease;
-      background: rgba(0, 0, 0, 0.2);
+    .form-icon {
+      font-size: 3em;
+      margin-bottom: 15px;
     }
 
-    .nav-items.expanded {
-      max-height: 500px;
+    .form-title {
+      color: var(--color-primary);
+      font-size: 2.2em;
+      font-weight: 600;
+      margin-bottom: 10px;
     }
 
-    .nav-item {
-      padding: 12px 20px 12px 40px;
-      color: var(--color-text-light);
-      text-decoration: none;
+    .form-subtitle {
+      color: var(--color-text-dark);
+      font-size: 1.1em;
+      opacity: 0.8;
+    }
+
+    /* FORM ELEMENTS */
+    .form-group {
+      margin-bottom: 25px;
+      text-align: left;
+    }
+
+    label {
       display: block;
-      transition: all 0.3s ease;
-      border-left: 3px solid transparent;
+      font-weight: 600;
+      color: var(--color-primary);
+      margin-bottom: 8px;
       font-size: 0.95em;
     }
 
-    .nav-item:hover {
-      background: rgba(255, 255, 255, 0.1);
-      border-left-color: var(--color-secondary);
-      padding-left: 45px;
+    .input-wrapper {
+      position: relative;
     }
 
-    .nav-item.active {
-      background: rgba(255, 107, 157, 0.2);
-      border-left-color: var(--color-primary);
-      color: var(--color-primary);
+    input[type="email"], input[type="password"] {
+      width: 100%;
+      padding: 15px 20px;
+      border: 2px solid #e0e0e0;
+      border-radius: 12px;
+      font-size: 16px;
+      transition: all 0.3s ease;
+      background: #f8f9fa;
     }
 
-    /* CONTENIDO PRINCIPAL */
-    .main-content {
-      flex: 1;
-      padding: 40px;
+    input[type="email"]:focus, input[type="password"]:focus {
+      outline: none;
+      border-color: var(--color-primary);
       background: var(--color-background);
+      box-shadow: 0 0 0 3px rgba(255, 107, 157, 0.1);
     }
 
-    .welcome-section {
-      text-align: center;
-      margin-bottom: 50px;
-      padding: 40px;
+    /* BOTÓN MEJORADO */
+    .btn-primary {
       background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
-      border-radius: 20px;
+      border: none;
       color: var(--color-text-light);
-      box-shadow: 0 10px 30px rgba(255, 107, 157, 0.3);
+      padding: 16px;
+      border-radius: 12px;
+      width: 100%;
+      font-size: 1.1em;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 5px 15px rgba(255, 107, 157, 0.3);
     }
 
-    .welcome-title {
-      font-size: 2.5em;
-      font-weight: 700;
-      margin-bottom: 10px;
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(255, 107, 157, 0.4);
     }
 
-    .welcome-subtitle {
-      font-size: 1.2em;
-      opacity: 0.9;
+    .btn-primary:active {
+      transform: translateY(0);
     }
 
-    /* TARJETAS DE ACCIÓN RÁPIDA */
-    .quick-actions {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-      gap: 25px;
-      margin-top: 40px;
+    /* ENLACE DE REGISTRO */
+    .register-link {
+      text-align: center;
+      margin-top: 25px;
     }
 
-    .action-card {
-      background: var(--color-background);
-      padding: 30px;
-      border-radius: 15px;
-      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+    .register-link a {
+      color: var(--color-primary);
+      text-decoration: none;
+      font-weight: 600;
+      transition: color 0.3s ease;
+    }
+
+    .register-link a:hover {
+      color: var(--color-secondary);
+      text-decoration: underline;
+    }
+
+    /* MENSAJES DE ESTADO MEJORADOS */
+    .message {
+      margin-top: 20px;
+      padding: 15px;
+      border-radius: 10px;
+      font-weight: 600;
       text-align: center;
       transition: all 0.3s ease;
-      border: 2px solid transparent;
     }
 
-    .action-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-      border-color: var(--color-primary);
+    .success {
+      background-color: rgba(76, 175, 80, 0.1);
+      color: var(--color-success);
+      border: 1px solid rgba(76, 175, 80, 0.3);
     }
 
-    .action-icon {
-      font-size: 3em;
-      margin-bottom: 20px;
-    }
-
-    .action-title {
-      font-size: 1.3em;
-      font-weight: 600;
-      color: var(--color-primary);
-      margin-bottom: 10px;
-    }
-
-    .action-description {
-      color: var(--color-text-dark);
-      opacity: 0.8;
-      line-height: 1.5;
+    .error {
+      background-color: rgba(244, 67, 54, 0.1);
+      color: var(--color-error);
+      border: 1px solid rgba(244, 67, 54, 0.3);
     }
 
     /* RESPONSIVE */
     @media (max-width: 768px) {
-      .dashboard-container {
+      .quick-access {
+        position: relative;
+        top: auto;
+        right: auto;
+        text-align: center;
+        margin-bottom: 20px;
+      }
+      
+      .container {
         flex-direction: column;
+        min-height: auto;
       }
-
-      .sidebar {
-        width: 100%;
-        height: auto;
+      
+      .promo-section {
+        padding: 30px 20px;
       }
-
-      .main-content {
-        padding: 20px;
+      
+      .form-section {
+        padding: 40px 30px;
       }
-
-      .welcome-title {
-        font-size: 2em;
+      
+      .promo-title {
+        font-size: 2.2em;
       }
-
-      .quick-actions {
-        grid-template-columns: 1fr;
+      
+      .form-title {
+        fontSize: 1.8em;
       }
     }
   </style>
 </head>
 <body>
-  <div class="dashboard-container">
-    <!-- SIDEBAR CON MENÚ -->
-    <nav class="sidebar">
-      <div class="sidebar-header">
+  <!-- BOTÓN DE ACCESO RÁPIDO AL MENÚ -->
+  <div class="quick-access">
+    <a href="dashboard.html" class="btn-inicio">🏠 Ir al Menú Principal</a>
+  </div>
+
+  <div class="container">
+    <!-- SECCIÓN PROMOCIONAL -->
+    <div class="promo-section">
+      <div class="logo-container">
         <div class="logo">🍦</div>
-        <div class="brand-name">Frío Natural</div>
-        <div class="brand-subtitle">Helados Artesanales</div>
+        <h1 class="promo-title">Frío Natural</h1>
+        <p class="promo-subtitle">Los sabores más cremosos y naturales te esperan</p>
       </div>
-
-      <div class="nav-menu">
-        <!-- Mi Cuenta -->
-        <div class="nav-category">
-          <div class="category-header" onclick="toggleCategory('mi-cuenta')">
-            <span>👤 Mi Cuenta</span>
-            <span class="category-icon">▼</span>
-          </div>
-          <div class="nav-items" id="mi-cuenta">
-            <a href="inisio de sesion (1).html" class="nav-item">Inicio de Sesión</a>
-            <a href="Registro de Cliente.html" class="nav-item">Registro de Cliente</a>
-            <a href="Perfil de Usuario.html" class="nav-item">Edición de Perfil</a>
-          </div>
-        </div>
-
-        <!-- Comprar y Mis Pedidos -->
-        <div class="nav-category">
-          <div class="category-header" onclick="toggleCategory('compras')">
-            <span>🛒 Comprar y Mis Pedidos</span>
-            <span class="category-icon">▼</span>
-          </div>
-          <div class="nav-items" id="compras">
-            <a href="Visualizar Catálogo.html" class="nav-item">Catálogo de Productos</a>
-            <a href="Carrito de Compras.html" class="nav-item">Carrito de Compras</a>
-            <a href="Aplicar Cupones y Promociones.html" class="nav-item">Aplicar Cupones</a>
-            <a href="Integración de Pagos.html" class="nav-item">Integración de Pagos</a>
-            <a href="Confirmación de Pago.html" class="nav-item">Confirmación de Pago</a>
-            <a href="Boleta Digital.html" class="nav-item">Generación de Boleta Digital</a>
-          </div>
-        </div>
-
-        <!-- Logística y Soporte -->
-        <div class="nav-category">
-          <div class="category-header" onclick="toggleCategory('logistica')">
-            <span>🚚 Logística y Soporte</span>
-            <span class="category-icon">▼</span>
-          </div>
-          <div class="nav-items" id="logistica">
-            <a href="Seguimiento en Tiempo Real.html" class="nav-item">Seguimiento en Tiempo Real</a>
-            <a href="Notificaciones de Pedido.html" class="nav-item">Notificaciones de Pedido</a>
-            <a href="Chat de Soporte.html" class="nav-item">Chat en Línea con Soporte</a>
-            <a href="Ticket de Reclamos.html" class="nav-item">Gestión de Tickets de Reclamos</a>
-            <a href="Encuesta de Satisfacción.html" class="nav-item">Encuesta de Satisfacción</a>
-          </div>
-        </div>
-
-        <!-- Marketing y Fidelización -->
-        <div class="nav-category">
-          <div class="category-header" onclick="toggleCategory('marketing')">
-            <span>🎯 Marketing y Fidelización</span>
-            <span class="category-icon">▼</span>
-          </div>
-          <div class="nav-items" id="marketing">
-            <a href="Sistema de Puntos.html" class="nav-item">Sistema de Puntos</a>
-            <a href="Promociones Personalizadas.html" class="nav-item">Promociones Personalizadas</a>
-            <a href="Envío de Ofertas.html" class="nav-item">Envío de Ofertas Masivas</a>
-            <a href="Opiniones de Clientes.html" class="nav-item">Opiniones de Clientes</a>
-          </div>
-        </div>
-
-        <!-- Análisis y Gestión Interna -->
-        <div class="nav-category">
-          <div class="category-header" onclick="toggleCategory('analisis')">
-            <span>📊 Análisis y Gestión Interna</span>
-            <span class="category-icon">▼</span>
-          </div>
-          <div class="nav-items" id="analisis">
-            <a href="Panel de Métricas.html" class="nav-item">Panel de Métricas</a>
-            <a href="Reporte de Ventas.html" class="nav-item">Reporte de Ventas</a>
-          </div>
-        </div>
+    </div>
+    
+    <!-- SECCIÓN DEL FORMULARIO -->
+    <div class="form-section">
+      <div class="form-header">
+        <div class="form-icon">🔐</div>
+        <h2 class="form-title">Iniciar Sesión</h2>
+        <p class="form-subtitle">Accede a tu cuenta para disfrutar de beneficios exclusivos</p>
       </div>
-    </nav>
+      
+      <form id="loginForm">
+        <div class="form-group">
+          <label for="email">Correo electrónico</label>
+          <div class="input-wrapper">
+            <input type="email" id="email" placeholder="petitancont@hotmail.com" required>
+          </div>
+        </div>
 
-    <!-- CONTENIDO PRINCIPAL -->
-    <main class="main-content">
-      <div class="welcome-section">
-        <h1 class="welcome-title">¡Bienvenido/a a la Heladería!</h1>
-        <p class="welcome-subtitle">¿Qué quieres hacer hoy?</p>
+        <div class="form-group">
+          <label for="password">Contraseña</label>
+          <div class="input-wrapper">
+            <input type="password" id="password" placeholder="••••••••" required>
+          </div>
+        </div>
+        
+        <button type="submit" class="btn-primary">Entrar a Mi Cuenta</button>
+      </form>
+
+      <div class="message" id="message"></div>
+      
+      <div class="register-link">
+        ¿No tienes cuenta? <a href="Registro de Cliente.html">Regístrate aquí</a>
       </div>
-
-      <div class="quick-actions">
-        <div class="action-card">
-          <div class="action-icon">🛒</div>
-          <h3 class="action-title">Hacer un Pedido</h3>
-          <p class="action-description">Explora nuestro catálogo y ordena tus helados favoritos</p>
-        </div>
-
-        <div class="action-card">
-          <div class="action-icon">📱</div>
-          <h3 class="action-title">Seguir Mi Pedido</h3>
-          <p class="action-description">Revisa el estado y ubicación de tu pedido en tiempo real</p>
-        </div>
-
-        <div class="action-card">
-          <div class="action-icon">🎁</div>
-          <h3 class="action-title">Mis Promociones</h3>
-          <p class="action-description">Descubre ofertas exclusivas y acumula puntos</p>
-        </div>
-
-        <div class="action-card">
-          <div class="action-icon">💬</div>
-          <h3 class="action-title">Soporte</h3>
-          <p class="action-description">Chatea con nosotros o crea un ticket de ayuda</p>
-        </div>
-      </div>
-    </main>
+    </div>
   </div>
 
   <script>
-    function toggleCategory(categoryId) {
-      const category = document.getElementById(categoryId);
-      const header = category.previousElementSibling;
-      
-      // Toggle la clase expanded
-      category.classList.toggle('expanded');
-      header.classList.toggle('active');
-    }
+    const form = document.getElementById('loginForm');
+    const message = document.getElementById('message');
 
-    // Abrir automáticamente algunas categorías al cargar
-    document.addEventListener('DOMContentLoaded', function() {
-      // Abrir "Comprar y Mis Pedidos" por defecto
-      toggleCategory('compras');
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+
+      // Simulación de credenciales correctas
+      if (email === "petitancont@hotmail.com" && password === "123456") {
+        message.textContent = "¡Bienvenido de vuelta! Redirigiendo... 🎉";
+        message.className = "message success";
+        
+        // Simular redirección después de 2 segundos
+        setTimeout(() => {
+          window.location.href = "dashboard.html";
+        }, 2000);
+      } else {
+        message.textContent = "Credenciales incorrectas. Por favor, verifica tus datos. ❌";
+        message.className = "message error";
+      }
+      
+      // Limpiar mensaje después de 5 segundos
+      setTimeout(() => {
+        message.textContent = "";
+        message.className = "message";
+      }, 5000);
     });
 
-    // Agregar interacción a las tarjetas de acción rápida
-    document.querySelectorAll('.action-card').forEach(card => {
-      card.addEventListener('click', function() {
-        const title = this.querySelector('.action-title').textContent;
-        alert(`Redirigiendo a: ${title}`);
-        // Aquí puedes agregar la redirección real
-      });
+    // También permitir acceso con cualquier credencial después de 3 intentos
+    let attempts = 0;
+    form.addEventListener('submit', (e) => {
+      attempts++;
+      if (attempts >= 3) {
+        const quickAccess = document.querySelector('.quick-access');
+        quickAccess.innerHTML += '<p style="color: white; background: var(--color-primary); padding: 10px; border-radius: 10px; margin-top: 10px; font-size: 12px;">💡 Tip: Usa el botón "Ir al Menú Principal" para acceso directo</p>';
+      }
     });
   </script>
 </body>
