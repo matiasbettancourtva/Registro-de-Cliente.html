@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inicio de Sesión - Frío Natural</title>
+  <style>
+    /* ... (todo el CSS permanece igual) ... */
+  </style>
+</head>
+<body>
+  <!-- BOTÓN VOLVER AL DASHBOARD -->
+  <div class="back-to-dashboard">
+    <a href="dashboard.html" class="btn-dashboard">🏠 Volver al Menú</a>
+  </div>
+
+  <div class="dashboard-container">
+    <!-- SIDEBAR CON MENÚ -->
+    <nav class="sidebar">
+      <div class="sidebar-header">
+        <div class="logo">🍦</div>
+        <div class="brand-name">Frío Natural</div>
+        <div class="brand-subtitle">Helados Artesanales</div>
+      </div>
+
+      <div class="nav-menu">
+        <!-- Mi Cuenta -->
+        <div class="nav-category">
+          <div class="category-header active" onclick="toggleCategory('mi-cuenta')">
+            <span>👤 MI CUENTA</span>
+            <span class="category-icon">▼</span>
+          </div>
+          <div class="nav-items expanded" id="mi-cuenta">
+            <a href="inicio-sesion.html" class="nav-item active">Inicio de Sesión</a>
+            <a href="registro-cliente.html" class="nav-item">Registro de Cliente</a>
+            <a href="perfil-usuario.html" class="nav-item">Edición de Perfil</a>
+          </div>
+        </div>
+
+        <!-- Comprar y Mis Pedidos -->
+        <div class="nav-category">
+          <div class="category-header" onclick="toggleCategory('compras')">
+            <span>🛒 COMPRAR Y MIS PEDIDOS</span>
+            <span class="category-icon">▼</span>
+          </div>
+          <div class="nav-items" id="compras">
+            <a href="catalogo-productos.html" class="nav-item">Catálogo de Productos</a>
+            <a href="carrito-compras.html" class="nav-item">Carrito de Compras</a>
+            <a href="aplicar-cupones.html" class="nav-item">Aplicar Cupones</a>
+            <a href="integracion-pagos.html" class="nav-item">Integración de Pagos</a>
+            <a href="confirmacion-pago.html" class="nav-item">Confirmación de Pago</a>
+            <a href="boleta-digital.html" class="nav-item">Generación de Boleta Digital</a>
+          </div>
+        </div>
+
+        <!-- Logística y Soporte -->
+        <div class="nav-category">
+          <div class="category-header" onclick="toggleCategory('logistica')">
+            <span>🚚 LOGÍSTICA Y SOPORTE</span>
+            <span class="category-icon">▼</span>
+          </div>
+          <div class="nav-items" id="logistica">
+            <a href="seguimiento-tiempo-real.html" class="nav-item">Seguimiento en Tiempo Real</a>
+            <a href="notificaciones-pedido.html" class="nav-item">Notificaciones de Pedido</a>
+            <a href="chat-soporte.html" class="nav-item">Chat en Línea con Soporte</a>
+            <a href="ticket-reclamos.html" class="nav-item">Gestión de Tickets de Reclamos</a>
+            <a href="encuesta-satisfaccion.html" class="nav-item">Encuesta de Satisfacción</a>
+          </div>
+        </div>
+
+        <!-- Marketing y Fidelización -->
+        <div class="nav-category">
+          <div class="category-header" onclick="toggleCategory('marketing')">
+            <span>🎯 MARKETING Y FIDELIZACIÓN</span>
+            <span class="category-icon">▼</span>
+          </div>
+          <div class="nav-items" id="marketing">
+            <a href="sistema-puntos.html" class="nav-item">Sistema de Puntos</a>
+            <a href="promociones-personalizadas.html" class="nav-item">Promociones Personalizadas</a>
+            <a href="envio-ofertas.html" class="nav-item">Envío de Ofertas Masivas</a>
+            <a href="opiniones-clientes.html" class="nav-item">Opiniones de Clientes</a>
+          </div>
+        </div>
+
+        <!-- Análisis y Gestión Interna -->
+        <div class="nav-category">
+          <div class="category-header" onclick="toggleCategory('analisis')">
+            <span>📊 ANÁLISIS Y GESTIÓN INTERNA</span>
+            <span class="category-icon">▼</span>
+          </div>
+          <div class="nav-items" id="analisis">
+            <a href="panel-metricas.html" class="nav-item">Panel de Métricas</a>
+            <a href="reporte-ventas.html" class="nav-item">Reporte de Ventas</a>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- CONTENIDO PRINCIPAL - FORMULARIO DE LOGIN -->
+    <main class="main-content">
+      <div class="login-container">
+        <div class="login-header">
+          <div class="login-icon">🔐</div>
+          <h1 class="login-title">Iniciar Sesión</h1>
+          <p class="login-subtitle">Accede a tu cuenta para disfrutar de beneficios exclusivos</p>
+        </div>
+        
+        <form id="loginForm">
+          <div class="form-group">
+            <label for="email">Correo electrónico</label>
+            <div class="input-wrapper">
+              <input type="email" id="email" placeholder="petitancont@hotmail.com" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="password">Contraseña</label>
+            <div class="input-wrapper">
+              <input type="password" id="password" placeholder="••••••••" required>
+            </div>
+          </div>
+          
+          <button type="submit" class="btn-primary">Entrar a Mi Cuenta</button>
+        </form>
+
+        <div class="message" id="message"></div>
+        
+        <div class="register-link">
+          ¿No tienes cuenta? <a href="registro-cliente.html">Regístrate aquí</a>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    function toggleCategory(categoryId) {
+      const category = document.getElementById(categoryId);
+      const header = category.previousElementSibling;
+      
+      // Toggle la clase expanded
+      category.classList.toggle('expanded');
+      header.classList.toggle('active');
+    }
+
+    // Manejo del formulario de login
+    const form = document.getElementById('loginForm');
+    const message = document.getElementById('message');
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+
+      // Simulación de credenciales correctas
+      if (email === "petitancont@hotmail.com" && password === "123456") {
+        message.textContent = "¡Bienvenido de vuelta! Redirigiendo al dashboard... 🎉";
+        message.className = "message success";
+        
+        // Simular redirección después de 2 segundos
+        setTimeout(() => {
+          window.location.href = "dashboard.html";
+        }, 2000);
+      } else {
+        message.textContent = "Credenciales incorrectas. Por favor, verifica tus datos. ❌";
+        message.className = "message error";
+      }
+      
+      // Limpiar mensaje después de 5 segundos
+      setTimeout(() => {
+        message.textContent = "";
+        message.className = "message";
+      }, 5000);
+    });
+
+    // Abrir automáticamente la categoría "Mi Cuenta" al cargar
+    document.addEventListener('DOMContentLoaded', function() {
+      // Ya está abierta por defecto en el HTML
+    });
+  </script>
+</body>
+</html>
