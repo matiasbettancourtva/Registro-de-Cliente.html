@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Autenticación 2FA - Frío Natural</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* VARIABLES DE COLOR - Tema Rosa Heladería */
+        :root {
+            --color-primary: #ff69b4;
+            --color-secondary: #ff85a1;
+            --color-accent: #ffd166;
+            --color-background: #ffffff;
+            --color-text-dark: #333333;
+            --color-text-light: #ffffff;
+            --color-success: #4CAF50;
+            --color-error: #f44336;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #ffccd5 0%, #c9e9ff 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+        }
+
+        /* BOTÓN DE REGRESO */
+        .back-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 100;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .back-button:hover {
+            background: white;
+            transform: translateX(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+        }
+        
+        .back-button i {
+            color: var(--color-primary);
+            font-size: 18px;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            width: 90%;
+            max-width: 500px;
+            margin-top: 40px;
+        }
+
+        .panel {
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        /* Bloque principal del título */
+        .seguridad-header {
+            background: var(--color-primary);
+            color: var(--color-text-light);
+            text-align: center;
+            border-left: 5px solid var(--color-accent);
+        }
+        
+        .seguridad-header h2 {
+            margin: 0;
+            font-size: 1.8em;
+        }
+
+        /* Bloque de Métodos Disponibles */
+        .seguridad-metodos {
+            background-color: var(--color-background);
+            border: 2px solid var(--color-secondary);
+        }
+        
+        .seguridad-metodos h3 {
+            margin-top: 0;
+            color: var(--color-primary);
+            font-size: 1.3em;
+        }
+        
+        .seguridad-metodos ul {
+            list-style: none;
+            padding-left: 0;
+            margin-top: 15px;
+        }
+        
+        .seguridad-metodos li {
+            padding: 12px 15px;
+            margin: 8px 0;
+            background: rgba(255, 105, 180, 0.1);
+            border-radius: 8px;
+            border-left: 4px solid var(--color-primary);
+            color: var(--color-text-dark);
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .seguridad-metodos li:hover {
+            background: rgba(255, 105, 180, 0.2);
+            transform: translateX(5px);
+        }
+
+        /* Bloque de Botón Activar */
+        .seguridad-accion {
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .seguridad-accion button {
+            padding: 14px 30px;
+            background: var(--color-background);
+            color: var(--color-primary);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1.1em;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .seguridad-accion button:hover {
+            background: var(--color-accent);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Log de Seguridad */
+        .log-seguridad {
+            background: var(--color-accent);
+            color: var(--color-text-dark);
+            border: 2px solid #ffc145;
+            font-size: 0.9em;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        
+        .log-seguridad p {
+            margin: 8px 0;
+        }
+        
+        .log-title {
+            font-weight: bold;
+            color: var(--color-primary);
+            margin-bottom: 15px;
+            text-align: center;
+            font-size: 1.1em;
+        }
+
+        /* Mensaje de Éxito */
+        .seguridad-exitosa {
+            background: rgba(76, 175, 80, 0.1);
+            color: #2e7d32;
+            border: 2px solid #4CAF50;
+            font-weight: bold;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        /* Mensaje de Error */
+        .error-seguridad {
+            background: rgba(244, 67, 54, 0.1);
+            color: #c62828;
+            border: 2px solid #f44336;
+            font-weight: bold;
+            text-align: center;
+            padding: 20px;
+        }
+
+        /* Estado de 2FA */
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 10px;
+            font-weight: 500;
+        }
+
+        .status-active {
+            color: var(--color-success);
+        }
+
+        .status-inactive {
+            color: var(--color-error);
+        }
+
+        /* QR Code Simulation */
+        .qr-container {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .qr-code {
+            width: 150px;
+            height: 150px;
+            background: linear-gradient(45deg, var(--color-primary), var(--color-secondary));
+            margin: 0 auto 15px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                width: 95%;
+            }
+            
+            .back-button {
+                top: 15px;
+                left: 15px;
+                width: 40px;
+                height: 40px;
+            }
+            
+            .panel {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <button class="back-button" id="backButton">
+        <i class="fas fa-arrow-left"></i>
+    </button>
+
+    <div class="container">
+
+        <div class="panel seguridad-header">
+            <h2>🔐 Autenticación de Dos Factores</h2>
+            <div class="status-indicator status-inactive" id="statusIndicator">
+                <i class="fas fa-shield-alt"></i>
+                <span>2FA Actualmente: Inactiva</span>
+            </div>
+        </div>
+
+        <div class="panel seguridad-metodos">
+            <h3>Métodos disponibles:</h3>
+            <ul>
+                <li><i class="fas fa-mobile-alt"></i> SMS</li>
+                <li><i class="fas fa-mobile"></i> Aplicación de Autenticación (Recomendado)</li>
+                <li><i class="fas fa-envelope"></i> Correo electrónico</li>
+            </ul>
+        </div>
+
+        <div class="panel" id="qrSection" style="display: none;">
+            <h3 style="color: var(--color-primary); text-align: center;">Escanea el código QR</h3>
+            <div class="qr-container">
+                <div class="qr-code">
+                    QR CODE
+                </div>
+                <p>Usa Google Authenticator o similar</p>
+            </div>
+        </div>
+
+        <div class="panel seguridad-accion">
+            <button id="activate2FA">✅ Activar Autenticación 2FA</button>
+        </div>
+        
+        <div class="panel seguridad-exitosa" id="successMessage" style="display: none;">
+            <p><i class="fas fa-check-circle"></i> 2FA activada correctamente. Al iniciar sesión se solicitará código adicional</p>
+        </div>
+
+        <div class="panel error-seguridad" id="errorMessage" style="display: none;">
+            <p><i class="fas fa-exclamation-circle"></i> Error al activar 2FA, cambios no aplicados</p>
+        </div>
+        
+        <div class="panel log-seguridad">
+            <div class="log-title">Registro de Seguridad</div>
+            <p><i class="fas fa-clock"></i> 2025-09-29T11:20Z - 2FA activada correctamente vía App Authenticator</p>
+            <p><i class="fas fa-clock"></i> 2025-09-29T11:25Z - Error: Fallo al registrar el método de 2FA</p>
+            <p><i class="fas fa-clock"></i> 2025-10-01T09:15Z - Configuración de seguridad revisada</p>
+        </div>
+        
+    </div>
+
+    <script>
+        // Función para el botón de regreso
+        document.getElementById('backButton').addEventListener('click', function() {
+            window.location.href = 'dashboard.html';
+        });
+
+        const activateButton = document.getElementById('activate2FA');
+        const successMessage = document.getElementById('successMessage');
+        const errorMessage = document.getElementById('errorMessage');
+        const qrSection = document.getElementById('qrSection');
+        const statusIndicator = document.getElementById('statusIndicator');
+
+        let is2FAActive = false;
+
+        activateButton.addEventListener('click', function() {
+            if (!is2FAActive) {
+                // Simular activación de 2FA
+                successMessage.style.display = 'block';
+                errorMessage.style.display = 'none';
+                qrSection.style.display = 'block';
+                
+                // Actualizar estado
+                statusIndicator.innerHTML = '<i class="fas fa-shield-alt"></i><span>2FA Actualmente: Activa</span>';
+                statusIndicator.className = 'status-indicator status-active';
+                
+                // Cambiar texto del botón
+                activateButton.innerHTML = '❌ Desactivar Autenticación 2FA';
+                activateButton.style.background = 'var(--color-error)';
+                activateButton.style.color = 'var(--color-text-light)';
+                
+                is2FAActive = true;
+            } else {
+                // Simular desactivación de 2FA
+                successMessage.style.display = 'none';
+                errorMessage.style.display = 'block';
+                qrSection.style.display = 'none';
+                
+                // Actualizar estado
+                statusIndicator.innerHTML = '<i class="fas fa-shield-alt"></i><span>2FA Actualmente: Inactiva</span>';
+                statusIndicator.className = 'status-indicator status-inactive';
+                
+                // Cambiar texto del botón
+                activateButton.innerHTML = '✅ Activar Autenticación 2FA';
+                activateButton.style.background = 'var(--color-background)';
+                activateButton.style.color = 'var(--color-primary)';
+                
+                is2FAActive = false;
+                
+                // Ocultar mensaje de error después de 3 segundos
+                setTimeout(() => {
+                    errorMessage.style.display = 'none';
+                }, 3000);
+            }
+        });
+    </script>
+</body>
+</html>
