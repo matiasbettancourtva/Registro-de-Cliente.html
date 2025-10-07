@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Carrito de Compras - Frío Natural</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    /* VARIABLES DE COLOR - Tema Rosa Heladería */
+    :root {
+      --color-primary: #ff69b4;
+      --color-secondary: #ff85a1;
+      --color-accent: #ffd166;
+      --color-background: #ffffff;
+      --color-text-dark: #333333;
+      --color-text-light: #ffffff;
+      --color-success: #4CAF50;
+      --color-error: #f44336;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #ffccd5 0%, #c9e9ff 100%);
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      position: relative;
+    }
+
+    /* BOTÓN DE REGRESO */
+    .back-button {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      background: rgba(255, 255, 255, 0.9);
+      border: none;
+      border-radius: 50%;
+      width: 45px;
+      height: 45px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      z-index: 100;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    }
+    
+    .back-button:hover {
+      background: white;
+      transform: translateX(-3px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+    }
+    
+    .back-button i {
+      color: var(--color-primary);
+      font-size: 18px;
+    }
+
+    .container {
+      display: flex;
+      padding: 20px;
+      gap: 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+      min-height: 100vh;
+    }
+
+    /* Columna izquierda - Promo */
+    .promo {
+      flex: 1;
+      background: var(--color-primary);
+      border-radius: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      color: var(--color-text-light);
+      font-weight: bold;
+      text-align: center;
+      padding: 30px;
+      box-shadow: 0 8px 25px rgba(255, 105, 180, 0.3);
+    }
+
+    .logo {
+      width: 150px;
+      height: 150px;
+      background-color: var(--color-background);
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 20px;
+      overflow: hidden;
+      border: 4px solid var(--color-accent);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .logo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .promo h1 {
+      font-size: 2.2em;
+      margin: 10px 0;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    .promo p {
+      font-size: 1.1em;
+      opacity: 0.9;
+      margin-top: 10px;
+    }
+
+    /* Productos disponibles */
+    .productos-disponibles {
+      flex: 1;
+      background: var(--color-background);
+      border-radius: 20px;
+      padding: 25px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    }
+
+    .productos-disponibles h3 {
+      color: var(--color-primary);
+      text-align: center;
+      margin-bottom: 20px;
+      font-size: 1.5em;
+    }
+
+    .producto-item {
+      background: linear-gradient(135deg, #fff 0%, #fff5f8 100%);
+      border: 2px solid var(--color-secondary);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 15px;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+
+    .producto-item:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(255, 105, 180, 0.2);
+      border-color: var(--color-primary);
+    }
+
+    .producto-nombre {
+      font-weight: bold;
+      color: var(--color-primary);
+      font-size: 1.2em;
+      margin-bottom: 8px;
+    }
+
+    .producto-precio {
+      color: var(--color-text-dark);
+      font-size: 1.1em;
+      margin-bottom: 12px;
+    }
+
+    /* Carrito */
+    .carrito {
+      flex: 2;
+      background: var(--color-background);
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    }
+
+    .carrito-header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .carrito-header h2 {
+      color: var(--color-primary);
+      font-size: 2.2em;
+      margin: 0 0 10px 0;
+    }
+
+    .carrito-header p {
+      color: var(--color-text-dark);
+      margin: 0;
+      opacity: 0.8;
+    }
+
+    .items-carrito {
+      margin-bottom: 30px;
+    }
+
+    .item-carrito {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(255, 105, 180, 0.05);
+      padding: 18px 20px;
+      border-radius: 12px;
+      margin-bottom: 15px;
+      border-left: 4px solid var(--color-primary);
+      transition: all 0.3s ease;
+    }
+
+    .item-carrito:hover {
+      background: rgba(255, 105, 180, 0.1);
+      transform: translateX(5px);
+    }
+
+    .item-info {
+      flex: 1;
+    }
+
+    .item-nombre {
+      font-weight: bold;
+      color: var(--color-primary);
+      font-size: 1.1em;
+    }
+
+    .item-precio {
+      color: var(--color-text-dark);
+      font-size: 1em;
+    }
+
+    .item-cantidad {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 0 20px;
+    }
+
+    .cantidad-btn {
+      background: var(--color-primary);
+      color: var(--color-text-light);
+      border: none;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-weight: bold;
+      transition: all 0.3s ease;
+    }
+
+    .cantidad-btn:hover {
+      background: var(--color-secondary);
+      transform: scale(1.1);
+    }
+
+    .cantidad-numero {
+      font-weight: bold;
+      color: var(--color-primary);
+      min-width: 30px;
+      text-align: center;
+    }
+
+    .btn {
+      padding: 12px 20px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: all 0.3s ease;
+    }
+
+    .btn-agregar {
+      background: var(--color-primary);
+      color: var(--color-text-light);
+      width: 100%;
+      margin-top: 10px;
+      box-shadow: 0 4px 12px rgba(255, 105, 180, 0.3);
+    }
+
+    .btn-agregar:hover {
+      background: var(--color-secondary);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(255, 105, 180, 0.4);
+    }
+
+    .btn-eliminar {
+      background: var(--color-error);
+      color: var(--color-text-light);
+      box-shadow: 0 4px 12px rgba(244, 67, 54, 0.3);
+    }
+
+    .btn-eliminar:hover {
+      background: #d32f2f;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(244, 67, 54, 0.4);
+    }
+
+    /* Resumen del carrito */
+    .resumen-carrito {
+      background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+      color: var(--color-text-light);
+      padding: 25px;
+      border-radius: 15px;
+      margin-top: 30px;
+    }
+
+    .resumen-item {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      font-size: 1.1em;
+    }
+
+    .resumen-total {
+      display: flex;
+      justify-content: space-between;
+      font-size: 1.3em;
+      font-weight: bold;
+      margin-top: 15px;
+      padding-top: 15px;
+      border-top: 2px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .btn-comprar {
+      background: var(--color-accent);
+      color: var(--color-text-dark);
+      width: 100%;
+      padding: 15px;
+      font-size: 1.2em;
+      margin-top: 20px;
+      box-shadow: 0 4px 12px rgba(255, 209, 102, 0.3);
+    }
+
+    .btn-comprar:hover {
+      background: #ffc145;
+      transform: translateY(-3px);
+      box-shadow: 0 6px 18px rgba(255, 209, 102, 0.4);
+    }
+
+    .carrito-vacio {
+      text-align: center;
+      color: var(--color-text-dark);
+      padding: 40px;
+      font-style: italic;
+      opacity: 0.7;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+        padding: 15px;
+      }
+      
+      .back-button {
+        top: 15px;
+        left: 15px;
+        width: 40px;
+        height: 40px;
+      }
+      
+      .promo, .productos-disponibles, .carrito {
+        padding: 20px;
+      }
+      
+      .item-carrito {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+      }
+      
+      .item-cantidad {
+        margin: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <button class="back-button" id="backButton">
+    <i class="fas fa-arrow-left"></i>
+  </button>
+
+  <div class="container">
+
+    <!-- Columna izquierda -->
+    <div class="promo">
+      <div class="logo">
+        <img src="https://sdmntpreastus2.oaiusercontent.com/files/00000000-770c-61f6-8aef-74efdfd45c34/raw?se=2025-10-07T06%3A14%3A19Z&sp=r&sv=2024-08-04&sr=b&scid=4f815d17-8442-536a-b8ea-22fae996e942&skoid=1e6af1bf-6b08-4a04-8919-15773e7e7024&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-10-06T07%3A34%3A45Z&ske=2025-10-07T07%3A34%3A45Z&sks=b&skv=2024-08-04&sig=KatmFJ/TVLD%2BeGdhshSRruxu%2BXVNZ9PVtudcjN89i0U%3D" alt="Logo Frío Natural">
+      </div>
+      <h1>Frío Natural</h1>
+      <p>Tu carrito de helados</p>
+      <p>🍦 Disfruta de tus favoritos 🍦</p>
+    </div>
+
+    <!-- Productos disponibles -->
+    <div class="productos-disponibles">
+      <h3>Productos Disponibles</h3>
+      
+      <div class="producto-item">
+        <div class="producto-nombre">Chocolate Suizo</div>
+        <div class="producto-precio">$10.000</div>
+        <button class="btn btn-agregar" data-producto="Chocolate Suizo" data-precio="10000">
+          <i class="fas fa-cart-plus"></i> Agregar al Carrito
+        </button>
+      </div>
+
+      <div class="producto-item">
+        <div class="producto-nombre">Fresa Natural</div>
+        <div class="producto-precio">$12.000</div>
+        <button class="btn btn-agregar" data-producto="Fresa Natural" data-precio="12000">
+          <i class="fas fa-cart-plus"></i> Agregar al Carrito
+        </button>
+      </div>
+
+      <div class="producto-item">
+        <div class="producto-nombre">Vainilla Francesa</div>
+        <div class="producto-precio">$9.000</div>
+        <button class="btn btn-agregar" data-producto="Vainilla Francesa" data-precio="9000">
+          <i class="fas fa-cart-plus"></i> Agregar al Carrito
+        </button>
+      </div>
+    </div>
+
+    <!-- Carrito -->
+    <div class="carrito">
+      <div class="carrito-header">
+        <h2>🛒 Carrito de Compras</h2>
+        <p>Revisa y gestiona tus productos</p>
+      </div>
+
+      <div class="items-carrito" id="itemsCarrito">
+        <!-- Los items del carrito se agregarán aquí dinámicamente -->
+        <div class="carrito-vacio" id="carritoVacio">
+          <i class="fas fa-shopping-cart" style="font-size: 3em; margin-bottom: 15px; opacity: 0.5;"></i>
+          <p>Tu carrito está vacío</p>
+          <p>Agrega algunos productos deliciosos</p>
+        </div>
+      </div>
+
+      <div class="resumen-carrito" id="resumenCarrito" style="display: none;">
+        <div class="resumen-item">
+          <span>Subtotal:</span>
+          <span id="subtotal">$0</span>
+        </div>
+        <div class="resumen-item">
+          <span>Envío:</span>
+          <span id="envio">$2.000</span>
+        </div>
+        <div class="resumen-total">
+          <span>Total:</span>
+          <span id="total">$2.000</span>
+        </div>
+        <button class="btn btn-comprar">
+          <i class="fas fa-credit-card"></i> Proceder al Pago
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    // Función para el botón de regreso
+    document.getElementById('backButton').addEventListener('click', function() {
+      window.location.href = 'dashboard.html';
+    });
+
+    let carrito = [];
+
+    // Agregar productos al carrito
+    const agregarBtns = document.querySelectorAll('.btn-agregar');
+    agregarBtns.forEach(btn => {
+      btn.addEventListener('click', function() {
+        const producto = this.getAttribute('data-producto');
+        const precio = parseInt(this.getAttribute('data-precio'));
+        
+        agregarAlCarrito(producto, precio);
+      });
+    });
+
+    function agregarAlCarrito(producto, precio) {
+      // Verificar si el producto ya está en el carrito
+      const itemExistente = carrito.find(item => item.producto === producto);
+      
+      if (itemExistente) {
+        itemExistente.cantidad++;
+      } else {
+        carrito.push({
+          producto: producto,
+          precio: precio,
+          cantidad: 1
+        });
+      }
+      
+      actualizarCarrito();
+      
+      // Mostrar notificación
+      alert(`¡${producto} agregado al carrito!`);
+    }
+
+    function eliminarDelCarrito(index) {
+      carrito.splice(index, 1);
+      actualizarCarrito();
+    }
+
+    function actualizarCantidad(index, cambio) {
+      carrito[index].cantidad += cambio;
+      
+      if (carrito[index].cantidad <= 0) {
+        eliminarDelCarrito(index);
+      } else {
+        actualizarCarrito();
+      }
+    }
+
+    function actualizarCarrito() {
+      const itemsCarrito = document.getElementById('itemsCarrito');
+      const carritoVacio = document.getElementById('carritoVacio');
+      const resumenCarrito = document.getElementById('resumenCarrito');
+      
+      // Limpiar carrito
+      itemsCarrito.innerHTML = '';
+      
+      if (carrito.length === 0) {
+        itemsCarrito.appendChild(carritoVacio);
+        carritoVacio.style.display = 'block';
+        resumenCarrito.style.display = 'none';
+        return;
+      }
+      
+      carritoVacio.style.display = 'none';
+      resumenCarrito.style.display = 'block';
+      
+      // Agregar items al carrito
+      carrito.forEach((item, index) => {
+        const itemElement = document.createElement('div');
+        itemElement.className = 'item-carrito';
+        itemElement.innerHTML = `
+          <div class="item-info">
+            <div class="item-nombre">${item.producto}</div>
+            <div class="item-precio">$${item.precio.toLocaleString()} c/u</div>
+          </div>
+          <div class="item-cantidad">
+            <button class="cantidad-btn" onclick="actualizarCantidad(${index}, -1)">-</button>
+            <span class="cantidad-numero">${item.cantidad}</span>
+            <button class="cantidad-btn" onclick="actualizarCantidad(${index}, 1)">+</button>
+          </div>
+          <button class="btn btn-eliminar" onclick="eliminarDelCarrito(${index})">
+            <i class="fas fa-trash"></i> Eliminar
+          </button>
+        `;
+        itemsCarrito.appendChild(itemElement);
+      });
+      
+      // Actualizar resumen
+      actualizarResumen();
+    }
+
+    function actualizarResumen() {
+      const subtotal = carrito.reduce((total, item) => total + (item.precio * item.cantidad), 0);
+      const envio = 2000;
+      const total = subtotal + envio;
+      
+      document.getElementById('subtotal').textContent = `$${subtotal.toLocaleString()}`;
+      document.getElementById('total').textContent = `$${total.toLocaleString()}`;
+    }
+
+    // Inicializar carrito
+    actualizarCarrito();
+  </script>
+</body>
+</html>
