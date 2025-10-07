@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Registro de Cliente</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     /* VARIABLES DE COLOR - Tema Rosa Heladería */
     :root {
@@ -29,7 +30,39 @@
       align-items: center;
       height: 100vh;
       margin: 0;
+      position: relative;
     }
+
+    /* BOTÓN DE REGRESO */
+    .back-button {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      background: rgba(255, 255, 255, 0.9);
+      border: none;
+      border-radius: 50%;
+      width: 45px;
+      height: 45px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      z-index: 100;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    }
+    
+    .back-button:hover {
+      background: white;
+      transform: translateX(-3px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+    }
+    
+    .back-button i {
+      color: var(--color-primary);
+      font-size: 18px;
+    }
+
     .container {
       display: flex;
       background: var(--color-background);
@@ -38,6 +71,7 @@
       overflow: hidden;
       width: 900px;
       max-width: 90%;
+      position: relative;
     }
 
     /* SECCIÓN DE PROMOCIÓN (ROSA) */
@@ -52,6 +86,7 @@
       font-weight: bold;
       padding: 30px; 
       text-align: center;
+      position: relative;
     }
     .promo h1 {
         font-size: 2.5em; 
@@ -118,6 +153,7 @@
     input[type="text"]:focus, input[type="email"]:focus, input[type="password"]:focus {
       outline: none;
       border: 1px solid var(--color-primary); 
+      box-shadow: 0 0 0 2px rgba(255, 105, 180, 0.2);
     }
 
     /* BOTÓN PRINCIPAL */
@@ -132,10 +168,12 @@
       font-weight: bold;
       cursor: pointer;
       margin-top: 25px; 
-      transition: background 0.3s;
+      transition: all 0.3s;
     }
     button:hover {
       background: var(--color-secondary); 
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(255, 105, 180, 0.3);
     }
 
     /* ESTILO DE CHECKBOX Y ENLACE OLVIDADO */
@@ -155,10 +193,11 @@
       color: var(--color-primary);
       text-decoration: none;
       font-weight: bold;
-      /* Eliminamos el float para que se alinee con flex */
+      transition: color 0.3s;
     }
     .link:hover {
         text-decoration: underline;
+        color: var(--color-secondary);
     }
 
     /* MENSAJES DE ESTADO */
@@ -167,6 +206,7 @@
       font-weight: bold;
       padding: 10px;
       border-radius: 6px;
+      transition: all 0.3s;
     }
     .success { 
       color: #0c6; 
@@ -178,12 +218,29 @@
       background-color: #ffe6f0;
       border: 1px solid #f5c9e2;
     }
+
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+      }
+      
+      .back-button {
+        top: 10px;
+        left: 10px;
+        width: 40px;
+        height: 40px;
+      }
+    }
   </style>
 </head>
 <body>
+  <button class="back-button" id="backButton">
+    <i class="fas fa-arrow-left"></i>
+  </button>
+
   <div class="container">
     <div class="promo">
-      <img src="https://sdmntpreastus2.oaiusercontent.com/files/00000000-770c-61f6-8aef-74efdfd45c34/raw?se=2025-10-07T03%3A31%3A55Z&sp=r&sv=2024-08-04&sr=b&scid=fe1a7ec0-09ae-5b13-b541-8408344a44fa&skoid=f71d6506-3cac-498e-b62a-67f9228033a9&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-10-06T10%3A25%3A11Z&ske=2025-10-07T10%3A25%3A11Z&sks=b&skv=2024-08-04&sig=BFhSuHhziBMg0QuMCYIkJ2UbYfYa7pY7r5KIst2mBNY%3D" alt="Logo de La Heladería">
+      <img src="https://sdmntpreastus2.oaiusercontent.com/files/00000000-770c-61f6-8aef-74efdfd45c34/raw?se=2025-10-07T05%3A05%3A44Z&sp=r&sv=2024-08-04&sr=b&scid=98a322aa-a7f1-5a1b-bbce-16fe5fc939e0&skoid=1e6af1bf-6b08-4a04-8919-15773e7e7024&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-10-06T21%3A16%3A16Z&ske=2025-10-07T21%3A16%3A16Z&sks=b&skv=2024-08-04&sig=Ftm0RNxTUq2x0fXLtHRnnwpLxXDBbq6q4s2%2B94%2Bc6xI%3D" alt="Logo de La Heladería">
       <h1>¡Crea tu Cuenta!</h1>
       <small>Regístrate y empieza a disfrutar los mejores helados.</small>
     </div>
@@ -207,7 +264,7 @@
             <input type="checkbox" id="terms" required>
             <label for="terms" style="display: inline-block; color: var(--color-text-dark);">Acepto términos y condiciones</label>
           </div>
-          <a href="#" class="link">¿Tienes una cuenta? Inicia sesión</a>
+          <a href="inicio-sesion.html" class="link">¿Tienes una cuenta? Inicia sesión</a>
         </div>
 
         <button type="submit">Registrarme</button>
@@ -217,6 +274,12 @@
   </div>
 
   <script>
+    // Función para el botón de regreso
+    document.getElementById('backButton').addEventListener('click', function() {
+      // Redirige al dashboard principal
+      window.location.href = 'dashboard.html';
+    });
+
     const form = document.getElementById('registerForm');
     const message = document.getElementById('message');
 
@@ -244,6 +307,11 @@
       } else {
         message.textContent = "Registro exitoso: Bienvenido a la Heladería 🎉";
         message.className = "message success";
+        
+        // Redirigir al dashboard después de registro exitoso
+        setTimeout(() => {
+          window.location.href = 'dashboard.html';
+        }, 2000);
       }
       
       // Temporizador para borrar el mensaje
