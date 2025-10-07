@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirmación de Pago - Frío Natural</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* VARIABLES DE COLOR - Tema Rosa Heladería */
+        :root {
+            --color-primary: #ff69b4;
+            --color-secondary: #ff85a1;
+            --color-accent: #ffd166;
+            --color-background: #ffffff;
+            --color-text-dark: #333333;
+            --color-text-light: #ffffff;
+            --color-success: #4CAF50;
+            --color-error: #f44336;
+            --color-warning: #ffc107;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #ffccd5 0%, #c9e9ff 100%);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        /* BOTÓN DE REGRESO */
+        .back-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 100;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .back-button:hover {
+            background: white;
+            transform: translateX(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+        }
+        
+        .back-button i {
+            color: var(--color-primary);
+            font-size: 18px;
+        }
+
+        /* Barra de Navegación */
+        .navbar {
+            background: var(--color-primary);
+            color: var(--color-text-light);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(255, 105, 180, 0.3);
+        }
+        .navbar-brand {
+            font-weight: bold;
+            font-size: 20px;
+            color: var(--color-text-light);
+            text-decoration: none;
+        }
+        .navbar-icon {
+            font-size: 20px;
+            color: var(--color-text-light);
+            cursor: pointer;
+        }
+
+        /* Contenedor Principal */
+        .content-container {
+            display: flex;
+            gap: 30px;
+            padding: 30px;
+            flex-grow: 1;
+            justify-content: center;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        /* Panel Izquierdo */
+        .panel-izquierda {
+            width: 200px;
+            background: var(--color-primary);
+            padding: 30px;
+            text-align: center;
+            border-radius: 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 300px;
+            box-shadow: 0 8px 25px rgba(255, 105, 180, 0.3);
+            color: var(--color-text-light);
+        }
+
+        .logo {
+            width: 120px;
+            height: 120px;
+            background-color: var(--color-background);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+            overflow: hidden;
+            border: 4px solid var(--color-accent);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .frio-natural-text {
+            font-weight: bold;
+            font-size: 1.4em;
+            margin: 10px 0;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .panel-izquierda p {
+            margin: 5px 0;
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        /* Contenedor de Confirmación de Pago */
+        .confirmation-container {
+            display: flex;
+            gap: 40px;
+            padding: 30px;
+            max-width: 900px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        /* 1. Sección de Detalles y Acciones */
+        .details-and-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            min-width: 320px;
+        }
+        
+        /* Tabla de Detalles */
+        .payment-details-table {
+            background: var(--color-background);
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            border: 2px solid var(--color-secondary);
+        }
+        .detail-row {
+            padding: 20px;
+            border-bottom: 1px solid rgba(255, 105, 180, 0.2);
+            font-weight: bold;
+            color: var(--color-text-dark);
+            transition: all 0.3s ease;
+        }
+        .detail-row:hover {
+            background: rgba(255, 105, 180, 0.05);
+        }
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+        .detail-row.processing {
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+            color: var(--color-text-light);
+            border-top: 3px solid var(--color-accent);
+        }
+
+        /* Botones de Acción */
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 10px;
+        }
+        .action-buttons button {
+            padding: 15px 25px;
+            border: none;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            flex-grow: 1;
+            transition: all 0.3s ease;
+            font-size: 1em;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+        .btn-confirmar {
+            background: var(--color-success);
+            color: var(--color-text-light);
+        }
+        .btn-confirmar:hover {
+            background: #45a049;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 18px rgba(76, 175, 80, 0.4);
+        }
+        .btn-cancelar {
+            background: var(--color-error);
+            color: var(--color-text-light);
+        }
+        .btn-cancelar:hover {
+            background: #d32f2f;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 18px rgba(244, 67, 54, 0.4);
+        }
+        
+        /* Mensaje Inferior */
+        .bottom-message {
+            background: rgba(255, 193, 7, 0.1);
+            color: #856404;
+            border: 2px solid var(--color-warning);
+            padding: 20px;
+            border-radius: 10px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(255, 193, 7, 0.2);
+            transition: all 0.3s ease;
+        }
+        .bottom-message:hover {
+            transform: translateY(-2px);
+        }
+        .info-icon {
+            font-size: 20px;
+            margin-right: 15px;
+            color: var(--color-warning);
+        }
+
+        /* 2. Sección de Resultados de Escenarios */
+        .scenario-results {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            min-width: 320px;
+        }
+        
+        /* Estilos de los Escenarios */
+        .scenario-block {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        /* Correo Exitoso */
+        .email-success-message {
+            background: rgba(76, 175, 80, 0.1);
+            color: #2e7d32;
+            border: 2px solid var(--color-success);
+            padding: 20px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(76, 175, 80, 0.2);
+            transition: all 0.3s ease;
+        }
+        .email-success-message:hover {
+            transform: translateY(-2px);
+        }
+        .check-icon {
+            font-size: 20px;
+            margin-right: 15px;
+            color: var(--color-success);
+        }
+
+        /* Correo Fallido */
+        .email-failure-message {
+            background: rgba(244, 67, 54, 0.1);
+            color: #c62828;
+            border: 2px solid var(--color-error);
+            padding: 20px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(244, 67, 54, 0.2);
+            transition: all 0.3s ease;
+        }
+        .email-failure-message:hover {
+            transform: translateY(-2px);
+        }
+        .x-icon {
+            font-size: 20px;
+            margin-right: 15px;
+            color: var(--color-error);
+        }
+
+        /* Estados dinámicos */
+        .processing-animation {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
+
+        /* Media Queries para responsividad */
+        @media (max-width: 768px) {
+            .content-container {
+                flex-direction: column;
+                align-items: center;
+                padding: 20px;
+            }
+            
+            .back-button {
+                top: 15px;
+                left: 15px;
+                width: 40px;
+                height: 40px;
+            }
+            
+            .panel-izquierda, .confirmation-container {
+                width: 90%;
+                max-width: 400px;
+            }
+            
+            .panel-izquierda {
+                height: auto;
+                padding: 25px;
+            }
+            
+            .confirmation-container {
+                flex-direction: column;
+            }
+            
+            .details-and-actions, .scenario-results {
+                width: 100%;
+                min-width: auto;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <button class="back-button" id="backButton">
+        <i class="fas fa-arrow-left"></i>
+    </button>
+
+    <nav class="navbar">
+        <a href="#" class="navbar-brand">Frío Natural</a>
+        <div class="navbar-icon">⚙️</div>
+    </nav>
+
+    <div class="content-container">
+        
+        <div class="panel-izquierda">
+            <div class="logo">
+                <img src="https://sdmntpreastus2.oaiusercontent.com/files/00000000-770c-61f6-8aef-74efdfd45c34/raw?se=2025-10-07T06%3A14%3A19Z&sp=r&sv=2024-08-04&sr=b&scid=4f815d17-8442-536a-b8ea-22fae996e942&skoid=1e6af1bf-6b08-4a04-8919-15773e7e7024&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-10-06T07%3A34%3A45Z&ske=2025-10-07T07%3A34%3A45Z&sks=b&skv=2024-08-04&sig=KatmFJ/TVLD%2BeGdhshSRruxu%2BXVNZ9PVtudcjN89i0U%3D" alt="Logo Frío Natural">
+            </div>
+            <p class="frio-natural-text">Frío Natural</p>
+            <p>Confirmación de Pago</p>
+            <p>✅ Transacción Segura</p>
+        </div>
+
+        <div class="confirmation-container">
+            
+            <div class="details-and-actions">
+                
+                <div class="payment-details-table">
+                    <div class="detail-row">
+                        <i class="fas fa-money-bill-wave"></i> Monto: $5.000
+                    </div>
+                    <div class="detail-row">
+                        <i class="fas fa-credit-card"></i> Método: Tarjeta de Crédito
+                    </div>
+                    <div class="detail-row processing processing-animation">
+                        <i class="fas fa-sync-alt fa-spin"></i> Estado: Procesando...
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="btn-confirmar" id="btnConfirmar">
+                        <i class="fas fa-check-circle"></i> Confirmar Pago
+                    </button>
+                    <button class="btn-cancelar" id="btnCancelar">
+                        <i class="fas fa-times-circle"></i> Cancelar
+                    </button>
+                </div>
+                
+                <div class="bottom-message">
+                    <span class="info-icon">⚠️</span> 
+                    <div>
+                        <strong>Te hemos enviado un comprobante al correo</strong><br>
+                        <small>Revisa tu bandeja de entrada o spam</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="scenario-results">
+                
+                <div class="scenario-block">
+                    <div class="email-success-message" id="successMessage">
+                        <span class="check-icon">✓</span> 
+                        <div>
+                            <strong>Correo recibido: "Confirmación de pago"</strong><br>
+                            <small>Tu pedido #00123 ha sido confirmado</small>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="scenario-block">
+                    <div class="email-failure-message" id="failureMessage">
+                        <span class="x-icon">✗</span> 
+                        <div>
+                            <strong>Correo recibido: "Error en el pago"</strong><br>
+                            <small>Transacción rechazada - Contacta con soporte</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+
+    <script>
+        // Función para el botón de regreso
+        document.getElementById('backButton').addEventListener('click', function() {
+            window.location.href = 'dashboard.html';
+        });
+
+        // Elementos del DOM
+        const btnConfirmar = document.getElementById('btnConfirmar');
+        const btnCancelar = document.getElementById('btnCancelar');
+        const successMessage = document.getElementById('successMessage');
+        const failureMessage = document.getElementById('failureMessage');
+        const processingRow = document.querySelector('.detail-row.processing');
+
+        // Inicialmente ocultar mensajes
+        successMessage.style.display = 'none';
+        failureMessage.style.display = 'none';
+
+        // Confirmar pago
+        btnConfirmar.addEventListener('click', function() {
+            // Simular procesamiento
+            processingRow.innerHTML = '<i class="fas fa-sync-alt fa-spin"></i> Estado: Verificando pago...';
+            btnConfirmar.disabled = true;
+            btnCancelar.disabled = true;
+
+            setTimeout(() => {
+                // 80% de éxito, 20% de fallo
+                const exito = Math.random() > 0.2;
+                
+                if (exito) {
+                    processingRow.innerHTML = '<i class="fas fa-check-circle"></i> Estado: <strong>Pago Confirmado</strong>';
+                    processingRow.style.background = 'linear-gradient(135deg, #4CAF50 0%, #45a049 100%)';
+                    successMessage.style.display = 'flex';
+                    failureMessage.style.display = 'none';
+                    
+                    // Cambiar botón de confirmar
+                    btnConfirmar.innerHTML = '<i class="fas fa-check"></i> Pago Exitoso';
+                    btnConfirmar.style.background = '#45a049';
+                } else {
+                    processingRow.innerHTML = '<i class="fas fa-times-circle"></i> Estado: <strong>Pago Rechazado</strong>';
+                    processingRow.style.background = 'linear-gradient(135deg, #f44336 0%, #d32f2f 100%)';
+                    failureMessage.style.display = 'flex';
+                    successMessage.style.display = 'none';
+                    
+                    // Cambiar botón de confirmar
+                    btnConfirmar.innerHTML = '<i class="fas fa-redo"></i> Reintentar Pago';
+                    btnConfirmar.style.background = '#d32f2f';
+                }
+                
+                // Rehabilitar botones después de 3 segundos
+                setTimeout(() => {
+                    btnConfirmar.disabled = false;
+                    btnCancelar.disabled = false;
+                }, 3000);
+                
+            }, 2000);
+        });
+
+        // Cancelar pago
+        btnCancelar.addEventListener('click', function() {
+            if (confirm('¿Estás seguro de que quieres cancelar el pago?')) {
+                window.location.href = 'carrito-compras.html';
+            }
+        });
+    </script>
+</body>
+</html>
