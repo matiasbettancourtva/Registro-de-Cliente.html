@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Métricas - Frío Natural</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* VARIABLES DE COLOR - Tema Rosa Heladería */
+        :root {
+            --color-primary: #ff69b4;
+            --color-secondary: #ff85a1;
+            --color-accent: #ffd166;
+            --color-background: #ffffff;
+            --color-text-dark: #333333;
+            --color-text-light: #ffffff;
+            --color-success: #4CAF50;
+            --color-warning: #ff9800;
+            --color-error: #f44336;
+            --color-info: #2196F3;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #ffccd5 0%, #c9e9ff 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* BOTÓN DE REGRESO */
+        .back-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 100;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .back-button:hover {
+            background: white;
+            transform: translateX(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+        }
+        
+        .back-button i {
+            color: var(--color-primary);
+            font-size: 18px;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            width: 90%;
+            max-width: 500px;
+            margin-top: 60px;
+        }
+
+        .panel {
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .panel:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Bloque principal del título */
+        .metricas-header {
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+            color: var(--color-text-light);
+            border-left: 5px solid var(--color-accent);
+            text-align: center;
+        }
+
+        .metricas-header h2 {
+            margin: 0;
+            font-size: 1.8em;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+        }
+
+        .subtitulo-metricas {
+            margin: 10px 0 0 0;
+            opacity: 0.9;
+            font-size: 1em;
+        }
+
+        /* Tarjetas de métricas principales */
+        .metricas-principales {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .metrica-card {
+            background: var(--color-background);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            border: 2px solid var(--color-secondary);
+            transition: all 0.3s ease;
+        }
+
+        .metrica-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .valor-metrica {
+            font-size: 2em;
+            font-weight: bold;
+            color: var(--color-primary);
+            margin: 10px 0 5px 0;
+        }
+
+        .etiqueta-metrica {
+            font-size: 0.9em;
+            color: #888;
+            font-weight: 500;
+        }
+
+        .tendencia-metrica {
+            font-size: 0.8em;
+            margin-top: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+
+        .tendencia-positiva {
+            color: var(--color-success);
+        }
+
+        .tendencia-negativa {
+            color: var(--color-error);
+        }
+
+        /* Lista de métricas disponibles */
+        .metricas-list {
+            background: var(--color-background);
+            border: 2px solid var(--color-secondary);
+            padding: 25px;
+        }
+        
+        .metricas-list h3 {
+            color: var(--color-primary);
+            margin: 0 0 20px 0;
+            font-size: 1.3em;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .lista-metricas {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .item-metrica {
+            padding: 15px;
+            margin-bottom: 12px;
+            background: rgba(255, 105, 180, 0.05);
+            border-radius: 10px;
+            border-left: 4px solid var(--color-primary);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .item-metrica:hover {
+            background: rgba(255, 105, 180, 0.1);
+            transform: translateX(5px);
+        }
+
+        .item-metrica:last-child {
+            margin-bottom: 0;
+        }
+
+        .icono-metrica {
+            font-size: 1.5em;
+            color: var(--color-primary);
+            width: 30px;
+            text-align: center;
+        }
+
+        .texto-metrica {
+            flex: 1;
+            color: var(--color-text-dark);
+            font-size: 1.1em;
+            font-weight: 500;
+        }
+
+        .estado-metrica {
+            background: var(--color-success);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+
+        /* Bloque de acción del botón */
+        .metricas-accion {
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+            padding: 25px;
+            text-align: center;
+            color: var(--color-text-light);
+        }
+        
+        .metricas-accion button {
+            padding: 15px 30px;
+            background: var(--color-background);
+            color: var(--color-primary);
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1.1em;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin: 0 auto;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .metricas-accion button:hover {
+            background: var(--color-accent);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Log de métricas */
+        .log-metricas {
+            background: var(--color-accent);
+            color: var(--color-text-dark);
+            border: 2px solid #ffc145;
+            font-size: 0.9em;
+            padding: 25px;
+            border-radius: 15px;
+        }
+
+        .log-metricas h4 {
+            margin-top: 0;
+            color: var(--color-primary);
+            font-size: 1.2em;
+            text-align: center;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .entrada-log {
+            margin-bottom: 12px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid rgba(255, 105, 180, 0.3);
+        }
+
+        .entrada-log:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        .fecha-log {
+            color: var(--color-primary);
+            font-weight: bold;
+            margin-right: 8px;
+        }
+
+        .log-exitoso {
+            color: var(--color-success);
+            font-weight: 500;
+        }
+
+        .log-error {
+            color: var(--color-error);
+            font-weight: 500;
+        }
+
+        .log-info {
+            color: var(--color-info);
+            font-weight: 500;
+        }
+
+        /* Estados dinámicos */
+        .mensaje-oculto {
+            display: none;
+        }
+
+        .animacion-metrica {
+            animation: metricaPulse 2s ease-in-out;
+        }
+
+        @keyframes metricaPulse {
+            0% { transform: scale(0.95); opacity: 0.7; }
+            50% { transform: scale(1.02); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* Indicador de carga */
+        .cargando-metricas {
+            text-align: center;
+            padding: 20px;
+            color: var(--color-primary);
+            font-weight: bold;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(255, 105, 180, 0.3);
+            border-top: 4px solid var(--color-primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Gráfico simple */
+        .grafico-simple {
+            height: 100px;
+            background: linear-gradient(180deg, rgba(255, 105, 180, 0.1) 0%, rgba(255, 105, 180, 0.3) 100%);
+            border-radius: 8px;
+            margin-top: 15px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .linea-tendencia {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--color-primary);
+            animation: drawLine 2s ease-in-out;
+        }
+
+        @keyframes drawLine {
+            0% { transform: scaleX(0); }
+            100% { transform: scaleX(1); }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                width: 95%;
+            }
+            
+            .back-button {
+                top: 15px;
+                left: 15px;
+                width: 40px;
+                height: 40px;
+            }
+            
+            .panel {
+                padding: 20px;
+            }
+            
+            .metricas-principales {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <button class="back-button" id="backButton">
+        <i class="fas fa-arrow-left"></i>
+    </button>
+
+    <div class="container">
+
+        <div class="panel metricas-header">
+            <h2>📊 Panel de Métricas</h2>
+            <p class="subtitulo-metricas">Seguimiento del rendimiento de tu heladería</p>
+        </div>
+
+        <div class="panel metricas-list">
+            <h3><i class="fas fa-chart-line"></i> Métricas Principales</h3>
+            
+            <div class="metricas-principales">
+                <div class="metrica-card">
+                    <i class="fas fa-shopping-cart" style="color: var(--color-primary); font-size: 1.5em;"></i>
+                    <div class="valor-metrica">$12,458</div>
+                    <div class="etiqueta-metrica">Ventas Hoy</div>
+                    <div class="tendencia-metrica tendencia-positiva">
+                        <i class="fas fa-arrow-up"></i> 12% vs ayer
+                    </div>
+                    <div class="grafico-simple">
+                        <div class="linea-tendencia"></div>
+                    </div>
+                </div>
+                
+                <div class="metrica-card">
+                    <i class="fas fa-users" style="color: var(--color-primary); font-size: 1.5em;"></i>
+                    <div class="valor-metrica">342</div>
+                    <div class="etiqueta-metrica">Clientes Hoy</div>
+                    <div class="tendencia-metrica tendencia-positiva">
+                        <i class="fas fa-arrow-up"></i> 8% vs ayer
+                    </div>
+                    <div class="grafico-simple">
+                        <div class="linea-tendencia"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <h3 style="margin-top: 30px;"><i class="fas fa-list-check"></i> Métricas Disponibles</h3>
+            <ul class="lista-metricas">
+                <li class="item-metrica">
+                    <span class="icono-metrica">📈</span>
+                    <span class="texto-metrica">Gráfico de ventas diarias</span>
+                    <span class="estado-metrica">ACTIVO</span>
+                </li>
+                <li class="item-metrica">
+                    <span class="icono-metrica">👥</span>
+                    <span class="texto-metrica">Gráfico de usuarios activos</span>
+                    <span class="estado-metrica">ACTIVO</span>
+                </li>
+                <li class="item-metrica">
+                    <span class="icono-metrica">📊</span>
+                    <span class="texto-metrica">Estadísticas generales</span>
+                    <span class="estado-metrica">ACTIVO</span>
+                </li>
+                <li class="item-metrica">
+                    <span class="icono-metrica">🍦</span>
+                    <span class="texto-metrica">Productos más vendidos</span>
+                    <span class="estado-metrica">ACTIVO</span>
+                </li>
+                <li class="item-metrica">
+                    <span class="icono-metrica">⏰</span>
+                    <span class="texto-metrica">Horarios pico de ventas</span>
+                    <span class="estado-metrica">ACTIVO</span>
+                </li>
+                <li class="item-metrica">
+                    <span class="icono-metrica">💰</span>
+                    <span class="texto-metrica">Análisis de ingresos</span>
+                    <span class="estado-metrica">ACTIVO</span>
+                </li>
+            </ul>
+        </div>
+
+        <div class="panel metricas-accion">
+            <button id="btnActualizarMetricas">
+                <i class="fas fa-sync-alt"></i> Actualizar Métricas
+            </button>
+        </div>
+
+        <div class="panel cargando-metricas mensaje-oculto" id="cargandoMetricas">
+            <div class="spinner"></div>
+            <p>Actualizando métricas en tiempo real...</p>
+        </div>
+        
+        <div class="panel log-metricas">
+            <h4><i class="fas fa-history"></i> Historial de Métricas</h4>
+            <div class="entrada-log">
+                <span class="fecha-log">14:00</span>
+                <span class="log-exitoso">Métricas actualizadas correctamente</span>
+            </div>
+            <div class="entrada-log">
+                <span class="fecha-log">13:45</span>
+                <span class="log-info">Nuevo pico de ventas detectado: 15:00-17:00</span>
+            </div>
+            <div class="entrada-log">
+                <span class="fecha-log">13:30</span>
+                <span class="log-error">Error al cargar métricas (timeout)</span>
+            </div>
+            <div class="entrada-log">
+                <span class="fecha-log">13:15</span>
+                <span class="log-exitoso">Datos sincronizados con servidor</span>
+            </div>
+            <div class="entrada-log">
+                <span class="fecha-log">13:00</span>
+                <span class="log-info">Helado de Vainilla es el producto más vendido</span>
+            </div>
+            <div class="entrada-log">
+                <span class="fecha-log">12:45</span>
+                <span class="log-exitoso">Métricas cargadas correctamente</span>
+            </div>
+        </div>
+        
+    </div>
+
+    <script>
+        // Función para el botón de regreso
+        document.getElementById('backButton').addEventListener('click', function() {
+            window.location.href = 'dashboard.html';
+        });
+
+        // Elementos del DOM
+        const btnActualizarMetricas = document.getElementById('btnActualizarMetricas');
+        const cargandoMetricas = document.getElementById('cargandoMetricas');
+        const logMetricas = document.querySelector('.log-metricas');
+        const valorVentas = document.querySelector('.valor-metrica:nth-child(2)');
+        const valorClientes = document.querySelector('.valor-metrica:nth-child(5)');
+
+        // Actualizar métricas
+        btnActualizarMetricas.addEventListener('click', function() {
+            const textoOriginal = btnActualizarMetricas.innerHTML;
+            
+            // Cambiar estado del botón
+            btnActualizarMetricas.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Actualizando...';
+            btnActualizarMetricas.disabled = true;
+            cargandoMetricas.style.display = 'block';
+
+            // Simular actualización de métricas
+            setTimeout(() => {
+                // 90% de éxito, 10% de fallo
+                const exito = Math.random() > 0.1;
+                
+                if (exito) {
+                    // Actualización exitosa
+                    btnActualizarMetricas.innerHTML = '<i class="fas fa-check"></i> ¡Actualizado!';
+                    btnActualizarMetricas.style.background = 'var(--color-success)';
+                    btnActualizarMetricas.style.color = 'var(--color-text-light)';
+                    
+                    // Actualizar valores de métricas
+                    const nuevoValorVentas = Math.floor(12458 + Math.random() * 2000);
+                    const nuevoValorClientes = Math.floor(342 + Math.random() * 50);
+                    
+                    valorVentas.textContent = `$${nuevoValorVentas.toLocaleString()}`;
+                    valorClientes.textContent = nuevoValorClientes.toLocaleString();
+                    
+                    // Agregar entrada al log
+                    const nuevaEntrada = document.createElement('div');
+                    nuevaEntrada.className = 'entrada-log';
+                    nuevaEntrada.innerHTML = `
+                        <span class="fecha-log">${new Date().toLocaleTimeString('es-ES', {hour: '2-digit', minute:'2-digit'})}</span>
+                        <span class="log-exitoso">Métricas actualizadas correctamente</span>
+                    `;
+                    logMetricas.insertBefore(nuevaEntrada, logMetricas.querySelector('.entrada-log'));
+                    
+                    // Animación de actualización
+                    document.querySelectorAll('.metrica-card').forEach(card => {
+                        card.classList.add('animacion-metrica');
+                        setTimeout(() => {
+                            card.classList.remove('animacion-metrica');
+                        }, 2000);
+                    });
+                } else {
+                    // Error en actualización
+                    btnActualizarMetricas.innerHTML = '<i class="fas fa-redo"></i> Reintentar';
+                    btnActualizarMetricas.style.background = 'var(--color-error)';
+                    btnActualizarMetricas.style.color = 'var(--color-text-light)';
+                    
+                    // Agregar entrada al log
+                    const nuevaEntrada = document.createElement('div');
+                    nuevaEntrada.className = 'entrada-log';
+                    nuevaEntrada.innerHTML = `
+                        <span class="fecha-log">${new Date().toLocaleTimeString('es-ES', {hour: '2-digit', minute:'2-digit'})}</span>
+                        <span class="log-error">Error al cargar métricas (servidor no disponible)</span>
+                    `;
+                    logMetricas.insertBefore(nuevaEntrada, logMetricas.querySelector('.entrada-log'));
+                }
+                
+                // Rehabilitar botón después de 3 segundos
+                setTimeout(() => {
+                    btnActualizarMetricas.innerHTML = textoOriginal;
+                    btnActualizarMetricas.style.background = 'var(--color-background)';
+                    btnActualizarMetricas.style.color = 'var(--color-primary)';
+                    btnActualizarMetricas.disabled = false;
+                    cargandoMetricas.style.display = 'none';
+                }, 3000);
+                
+            }, 2000);
+        });
+
+        // Efectos interactivos en las métricas
+        const metricasItems = document.querySelectorAll('.item-metrica');
+        metricasItems.forEach(item => {
+            item.addEventListener('click', function() {
+                const textoMetrica = this.querySelector('.texto-metrica').textContent;
+                const estadoMetrica = this.querySelector('.estado-metrica').textContent;
+                
+                alert(`📈 Información de Métrica:\n\n${textoMetrica}\n\nEstado: ${estadoMetrica}\n\nÚltima actualización: ${new Date().toLocaleString()}`);
+            });
+        });
+
+        // Simular actualización automática cada 30 segundos
+        setInterval(() => {
+            const nuevoValorVentas = Math.floor(12458 + Math.random() * 1000);
+            const nuevoValorClientes = Math.floor(342 + Math.random() * 25);
+            
+            valorVentas.textContent = `$${nuevoValorVentas.toLocaleString()}`;
+            valorClientes.textContent = nuevoValorClientes.toLocaleString();
+            
+            // Agregar entrada al log automática
+            const nuevaEntrada = document.createElement('div');
+            nuevaEntrada.className = 'entrada-log';
+            nuevaEntrada.innerHTML = `
+                <span class="fecha-log">${new Date().toLocaleTimeString('es-ES', {hour: '2-digit', minute:'2-digit'})}</span>
+                <span class="log-info">Actualización automática de métricas</span>
+            `;
+            logMetricas.insertBefore(nuevaEntrada, logMetricas.querySelector('.entrada-log'));
+            
+            // Limitar el número de entradas en el log
+            if (logMetricas.querySelectorAll('.entrada-log').length > 8) {
+                logMetricas.removeChild(logMetricas.lastChild);
+            }
+        }, 30000);
+    </script>
+</body>
+</html>
