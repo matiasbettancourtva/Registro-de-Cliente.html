@@ -1,182 +1,318 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Inicio de Sesión - Frío Natural</title>
-  <style>
-    /* ... (todo el CSS permanece igual) ... */
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Frio Natural - Iniciar Sesión</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #ffccd5 0%, #c9e9ff 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            width: 100%;
+            background-color: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+        
+        .back-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.8);
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+        
+        .back-button:hover {
+            background: white;
+            transform: translateX(-3px);
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .back-button i {
+            color: #ff6b95;
+            font-size: 18px;
+        }
+        
+        .content-wrapper {
+            display: flex;
+        }
+        
+        .left-section {
+            flex: 1;
+            background: linear-gradient(135deg, #ff6b95 0%, #ff8e53 100%);
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            text-align: center;
+        }
+        
+        .logo {
+            width: 150px;
+            height: 150px;
+            background-color: white;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+        
+        .logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .left-section h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        .left-section p {
+            font-size: 18px;
+            margin-bottom: 30px;
+            opacity: 0.9;
+        }
+        
+        .ice-cream-icons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .ice-cream {
+            width: 50px;
+            height: 70px;
+            background: linear-gradient(to bottom, #ffccd5 0%, #ff6b95 50%, #8a2be2 100%);
+            border-radius: 25px 25px 0 0;
+            position: relative;
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        .ice-cream:nth-child(2) {
+            background: linear-gradient(to bottom, #fffacd 0%, #ffd700 50%, #ff8c00 100%);
+            animation-delay: 0.5s;
+        }
+        
+        .ice-cream:nth-child(3) {
+            background: linear-gradient(to bottom, #e0ffff 0%, #87ceeb 50%, #1e90ff 100%);
+            animation-delay: 1s;
+        }
+        
+        .ice-cream::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 10px;
+            width: 30px;
+            height: 20px;
+            background-color: #cd853f;
+            border-radius: 0 0 5px 5px;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .right-section {
+            flex: 1;
+            padding: 50px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .right-section h2 {
+            color: #ff6b95;
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        
+        .right-section p {
+            color: #666;
+            margin-bottom: 30px;
+            line-height: 1.5;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 500;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        .form-group input:focus {
+            border-color: #ff6b95;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(255, 107, 149, 0.2);
+        }
+        
+        .btn {
+            background: linear-gradient(to right, #ff6b95, #ff8e53);
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            margin-top: 10px;
+            width: 100%;
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(255, 107, 149, 0.4);
+        }
+        
+        .register-link {
+            text-align: center;
+            margin-top: 20px;
+            color: #666;
+        }
+        
+        .register-link a {
+            color: #ff6b95;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        .register-link a:hover {
+            text-decoration: underline;
+        }
+        
+        @media (max-width: 768px) {
+            .content-wrapper {
+                flex-direction: column;
+            }
+            
+            .left-section, .right-section {
+                padding: 30px;
+            }
+            
+            .back-button {
+                top: 15px;
+                left: 15px;
+            }
+        }
+    </style>
 </head>
 <body>
-  <!-- BOTÓN VOLVER AL DASHBOARD -->
-  <div class="back-to-dashboard">
-    <a href="dashboard.html" class="btn-dashboard">🏠 Volver al Menú</a>
-  </div>
-
-  <div class="dashboard-container">
-    <!-- SIDEBAR CON MENÚ -->
-    <nav class="sidebar">
-      <div class="sidebar-header">
-        <div class="logo">🍦</div>
-        <div class="brand-name">Frío Natural</div>
-        <div class="brand-subtitle">Helados Artesanales</div>
-      </div>
-
-      <div class="nav-menu">
-        <!-- Mi Cuenta -->
-        <div class="nav-category">
-          <div class="category-header active" onclick="toggleCategory('mi-cuenta')">
-            <span>👤 MI CUENTA</span>
-            <span class="category-icon">▼</span>
-          </div>
-          <div class="nav-items expanded" id="mi-cuenta">
-            <a href="inicio-sesion.html" class="nav-item active">Inicio de Sesión</a>
-            <a href="registro-cliente.html" class="nav-item">Registro de Cliente</a>
-            <a href="perfil-usuario.html" class="nav-item">Edición de Perfil</a>
-          </div>
-        </div>
-
-        <!-- Comprar y Mis Pedidos -->
-        <div class="nav-category">
-          <div class="category-header" onclick="toggleCategory('compras')">
-            <span>🛒 COMPRAR Y MIS PEDIDOS</span>
-            <span class="category-icon">▼</span>
-          </div>
-          <div class="nav-items" id="compras">
-            <a href="catalogo-productos.html" class="nav-item">Catálogo de Productos</a>
-            <a href="carrito-compras.html" class="nav-item">Carrito de Compras</a>
-            <a href="aplicar-cupones.html" class="nav-item">Aplicar Cupones</a>
-            <a href="integracion-pagos.html" class="nav-item">Integración de Pagos</a>
-            <a href="confirmacion-pago.html" class="nav-item">Confirmación de Pago</a>
-            <a href="boleta-digital.html" class="nav-item">Generación de Boleta Digital</a>
-          </div>
-        </div>
-
-        <!-- Logística y Soporte -->
-        <div class="nav-category">
-          <div class="category-header" onclick="toggleCategory('logistica')">
-            <span>🚚 LOGÍSTICA Y SOPORTE</span>
-            <span class="category-icon">▼</span>
-          </div>
-          <div class="nav-items" id="logistica">
-            <a href="seguimiento-tiempo-real.html" class="nav-item">Seguimiento en Tiempo Real</a>
-            <a href="notificaciones-pedido.html" class="nav-item">Notificaciones de Pedido</a>
-            <a href="chat-soporte.html" class="nav-item">Chat en Línea con Soporte</a>
-            <a href="ticket-reclamos.html" class="nav-item">Gestión de Tickets de Reclamos</a>
-            <a href="encuesta-satisfaccion.html" class="nav-item">Encuesta de Satisfacción</a>
-          </div>
-        </div>
-
-        <!-- Marketing y Fidelización -->
-        <div class="nav-category">
-          <div class="category-header" onclick="toggleCategory('marketing')">
-            <span>🎯 MARKETING Y FIDELIZACIÓN</span>
-            <span class="category-icon">▼</span>
-          </div>
-          <div class="nav-items" id="marketing">
-            <a href="sistema-puntos.html" class="nav-item">Sistema de Puntos</a>
-            <a href="promociones-personalizadas.html" class="nav-item">Promociones Personalizadas</a>
-            <a href="envio-ofertas.html" class="nav-item">Envío de Ofertas Masivas</a>
-            <a href="opiniones-clientes.html" class="nav-item">Opiniones de Clientes</a>
-          </div>
-        </div>
-
-        <!-- Análisis y Gestión Interna -->
-        <div class="nav-category">
-          <div class="category-header" onclick="toggleCategory('analisis')">
-            <span>📊 ANÁLISIS Y GESTIÓN INTERNA</span>
-            <span class="category-icon">▼</span>
-          </div>
-          <div class="nav-items" id="analisis">
-            <a href="panel-metricas.html" class="nav-item">Panel de Métricas</a>
-            <a href="reporte-ventas.html" class="nav-item">Reporte de Ventas</a>
-          </div>
-        </div>
-      </div>
-    </nav>
-
-    <!-- CONTENIDO PRINCIPAL - FORMULARIO DE LOGIN -->
-    <main class="main-content">
-      <div class="login-container">
-        <div class="login-header">
-          <div class="login-icon">🔐</div>
-          <h1 class="login-title">Iniciar Sesión</h1>
-          <p class="login-subtitle">Accede a tu cuenta para disfrutar de beneficios exclusivos</p>
-        </div>
+    <div class="container">
+        <button class="back-button" id="backButton">
+            <i class="fas fa-arrow-left"></i>
+        </button>
         
-        <form id="loginForm">
-          <div class="form-group">
-            <label for="email">Correo electrónico</label>
-            <div class="input-wrapper">
-              <input type="email" id="email" placeholder="petitancont@hotmail.com" required>
+        <div class="content-wrapper">
+            <div class="left-section">
+                <div class="logo">
+                    <img src="https://sdmntpreastus2.oaiusercontent.com/files/00000000-770c-61f6-8aef-74efdfd45c34/raw?se=2025-10-07T05%3A05%3A44Z&sp=r&sv=2024-08-04&sr=b&scid=98a322aa-a7f1-5a1b-bbce-16fe5fc939e0&skoid=1e6af1bf-6b08-4a04-8919-15773e7e7024&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-10-06T21%3A16%3A16Z&ske=2025-10-07T21%3A16%3A16Z&sks=b&skv=2024-08-04&sig=Ftm0RNxTUq2x0fXLtHRnnwpLxXDBbq6q4s2%2B94%2Bc6xI%3D" alt="Logo Heladería">
+                </div>
+                <h1>Bienvenido/a de vuelta!</h1>
+                <p>Tu lugar para el helado perfecto</p>
+                <div class="ice-cream-icons">
+                    <div class="ice-cream"></div>
+                    <div class="ice-cream"></div>
+                    <div class="ice-cream"></div>
+                </div>
             </div>
-          </div>
-
-          <div class="form-group">
-            <label for="password">Contraseña</label>
-            <div class="input-wrapper">
-              <input type="password" id="password" placeholder="••••••••" required>
+            
+            <div class="right-section">
+                <h2>Iniciar Sesión</h2>
+                <p>Accede para disfrutar de los sabores favoritos</p>
+                
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label for="email">Correo electrónico</label>
+                        <input type="email" id="email" placeholder="ejemplo@correo.com" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="password">Contraseña</label>
+                        <input type="password" id="password" placeholder="*****" required>
+                    </div>
+                    
+                    <button type="submit" class="btn">Entrar a la Heladería</button>
+                </form>
+                
+                <div class="register-link">
+                    ¿No tienes cuenta? <a href="registro-cliente.html">Regístrate aquí</a>
+                </div>
             </div>
-          </div>
-          
-          <button type="submit" class="btn-primary">Entrar a Mi Cuenta</button>
-        </form>
-
-        <div class="message" id="message"></div>
-        
-        <div class="register-link">
-          ¿No tienes cuenta? <a href="registro-cliente.html">Regístrate aquí</a>
         </div>
-      </div>
-    </main>
-  </div>
+    </div>
 
-  <script>
-    function toggleCategory(categoryId) {
-      const category = document.getElementById(categoryId);
-      const header = category.previousElementSibling;
-      
-      // Toggle la clase expanded
-      category.classList.toggle('expanded');
-      header.classList.toggle('active');
-    }
+    <script>
+        // Función para el botón de regreso
+        document.getElementById('backButton').addEventListener('click', function() {
+            // Redirige al dashboard principal
+            window.location.href = 'dashboard.html';
+        });
 
-    // Manejo del formulario de login
-    const form = document.getElementById('loginForm');
-    const message = document.getElementById('message');
-
-    form.addEventListener('submit', (e) => {
-      e.preventDefault();
-
-      const email = document.getElementById('email').value;
-      const password = document.getElementById('password').value;
-
-      // Simulación de credenciales correctas
-      if (email === "petitancont@hotmail.com" && password === "123456") {
-        message.textContent = "¡Bienvenido de vuelta! Redirigiendo al dashboard... 🎉";
-        message.className = "message success";
-        
-        // Simular redirección después de 2 segundos
-        setTimeout(() => {
-          window.location.href = "dashboard.html";
-        }, 2000);
-      } else {
-        message.textContent = "Credenciales incorrectas. Por favor, verifica tus datos. ❌";
-        message.className = "message error";
-      }
-      
-      // Limpiar mensaje después de 5 segundos
-      setTimeout(() => {
-        message.textContent = "";
-        message.className = "message";
-      }, 5000);
-    });
-
-    // Abrir automáticamente la categoría "Mi Cuenta" al cargar
-    document.addEventListener('DOMContentLoaded', function() {
-      // Ya está abierta por defecto en el HTML
-    });
-  </script>
+        // Función para el envío del formulario
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            if(email && password) {
+                alert('¡Inicio de sesión exitoso! Redirigiendo al dashboard...');
+                // Redirige al dashboard después del inicio de sesión exitoso
+                window.location.href = 'dashboard.html';
+            } else {
+                alert('Por favor, complete todos los campos.');
+            }
+        });
+    </script>
 </body>
 </html>
