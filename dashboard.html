@@ -2,19 +2,231 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard - Frío Natural Heladería</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    /* ... (CSS permanece igual) ... */
+    :root {
+      --color-primary: #ff6b9d;
+      --color-secondary: #ff9ebb;
+      --color-accent: #ffd166;
+      --color-background: #ffffff;
+      --color-sidebar: #2c3e50;
+      --color-text-dark: #333333;
+      --color-text-light: #ffffff;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', 'Segoe UI', Arial, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .dashboard-container {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      width: 280px;
+      background: var(--color-sidebar);
+      color: var(--color-text-light);
+      box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .sidebar-header {
+      padding: 30px 20px;
+      background: rgba(255, 255, 255, 0.1);
+      text-align: center;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .logo {
+      font-size: 2.5em;
+      margin-bottom: 10px;
+    }
+
+    .brand-name {
+      font-size: 1.5em;
+      font-weight: 700;
+    }
+
+    .brand-subtitle {
+      font-size: 0.9em;
+      opacity: 0.8;
+      margin-top: 5px;
+    }
+
+    .nav-menu {
+      padding: 20px 0;
+    }
+
+    .nav-category {
+      margin-bottom: 10px;
+    }
+
+    .category-header {
+      padding: 15px 20px;
+      font-weight: 600;
+      font-size: 0.9em;
+      color: var(--color-accent);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      border-left: 4px solid transparent;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .category-header:hover {
+      background: rgba(255, 255, 255, 0.05);
+      border-left-color: var(--color-accent);
+    }
+
+    .category-header.active {
+      background: rgba(255, 255, 255, 0.1);
+      border-left-color: var(--color-primary);
+    }
+
+    .category-icon {
+      transition: transform 0.3s ease;
+    }
+
+    .category-header.active .category-icon {
+      transform: rotate(180deg);
+    }
+
+    .nav-items {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease;
+      background: rgba(0, 0, 0, 0.2);
+    }
+
+    .nav-items.expanded {
+      max-height: 500px;
+    }
+
+    .nav-item {
+      padding: 12px 20px 12px 40px;
+      color: var(--color-text-light);
+      text-decoration: none;
+      display: block;
+      transition: all 0.3s ease;
+      border-left: 3px solid transparent;
+      font-size: 0.95em;
+    }
+
+    .nav-item:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-left-color: var(--color-secondary);
+      padding-left: 45px;
+    }
+
+    .main-content {
+      flex: 1;
+      padding: 40px;
+      background: var(--color-background);
+    }
+
+    .welcome-section {
+      text-align: center;
+      margin-bottom: 50px;
+      padding: 40px;
+      background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+      border-radius: 20px;
+      color: var(--color-text-light);
+      box-shadow: 0 10px 30px rgba(255, 107, 157, 0.3);
+    }
+
+    .welcome-title {
+      font-size: 2.5em;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .welcome-subtitle {
+      font-size: 1.2em;
+      opacity: 0.9;
+    }
+
+    .quick-actions {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 25px;
+      margin-top: 40px;
+    }
+
+    .action-card {
+      background: var(--color-background);
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      transition: all 0.3s ease;
+      border: 2px solid transparent;
+      cursor: pointer;
+    }
+
+    .action-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+      border-color: var(--color-primary);
+    }
+
+    .action-icon {
+      font-size: 3em;
+      margin-bottom: 20px;
+    }
+
+    .action-title {
+      font-size: 1.3em;
+      font-weight: 600;
+      color: var(--color-primary);
+      margin-bottom: 10px;
+    }
+
+    .action-description {
+      color: var(--color-text-dark);
+      opacity: 0.8;
+      line-height: 1.5;
+    }
+
+    @media (max-width: 768px) {
+      .dashboard-container {
+        flex-direction: column;
+      }
+      .sidebar {
+        width: 100%;
+      }
+      .main-content {
+        padding: 20px;
+      }
+      .welcome-title {
+        font-size: 2em;
+      }
+      .quick-actions {
+        grid-template-columns: 1fr;
+      }
+    }
   </style>
 </head>
 <body>
   <div class="dashboard-container">
-    <!-- SIDEBAR CON MENÚ -->
     <nav class="sidebar">
       <div class="sidebar-header">
         <div class="logo">🍦</div>
-        <div class="brand-name">Frío Natural</div>
+        <div class="brand-name">Frio Natural</div>
         <div class="brand-subtitle">Helados Artesanales</div>
       </div>
 
@@ -22,71 +234,71 @@
         <!-- Mi Cuenta -->
         <div class="nav-category">
           <div class="category-header" onclick="toggleCategory('mi-cuenta')">
-            <span>👤 Mi Cuenta</span>
+            <span>Mi Cuenta</span>
             <span class="category-icon">▼</span>
           </div>
           <div class="nav-items" id="mi-cuenta">
-            <a href="inicio-sesion.html" class="nav-item">Inicio de Sesión</a>
+            <a href="inicio-sesion.html" class="nav-item">Inicio de Sesion</a>
             <a href="registro-cliente.html" class="nav-item">Registro de Cliente</a>
-            <a href="perfil-usuario.html" class="nav-item">Edición de Perfil</a>
-            <a href="autenticacion-dos-factores.html" class="nav-item">Autenticación 2FA</a>
-            <a href="configuracion-privacidad.html" class="nav-item">Configuración Privacidad</a>
+            <a href="perfil-usuario.html" class="nav-item">Edicion de Perfil</a>
+            <a href="autenticacion-dos-factores.html" class="nav-item">Autenticacion 2FA</a>
+            <a href="configuracion-privacidad.html" class="nav-item">Configuracion Privacidad</a>
           </div>
         </div>
 
         <!-- Comprar y Mis Pedidos -->
         <div class="nav-category">
           <div class="category-header" onclick="toggleCategory('compras')">
-            <span>🛒 Comprar y Mis Pedidos</span>
+            <span>Comprar y Mis Pedidos</span>
             <span class="category-icon">▼</span>
           </div>
           <div class="nav-items" id="compras">
-            <a href="catalogo-productos.html" class="nav-item">Catálogo de Productos</a>
+            <a href="catalogo-productos.html" class="nav-item">Catalogo de Productos</a>
             <a href="carrito-compras.html" class="nav-item">Carrito de Compras</a>
             <a href="aplicar-cupones.html" class="nav-item">Aplicar Cupones</a>
-            <a href="integracion-pagos.html" class="nav-item">Integración de Pagos</a>
-            <a href="confirmacion-pago.html" class="nav-item">Confirmación de Pago</a>
+            <a href="integracion-pagos.html" class="nav-item">Integracion de Pagos</a>
+            <a href="confirmacion-pago.html" class="nav-item">Confirmacion de Pago</a>
             <a href="boleta-digital.html" class="nav-item">Boleta Digital</a>
           </div>
         </div>
 
-        <!-- Logística y Soporte -->
+        <!-- Logistica y Soporte -->
         <div class="nav-category">
           <div class="category-header" onclick="toggleCategory('logistica')">
-            <span>🚚 Logística y Soporte</span>
+            <span>Logistica y Soporte</span>
             <span class="category-icon">▼</span>
           </div>
           <div class="nav-items" id="logistica">
             <a href="seguimiento-tiempo-real.html" class="nav-item">Seguimiento en Tiempo Real</a>
             <a href="notificaciones-pedido.html" class="nav-item">Notificaciones de Pedido</a>
-            <a href="chat-soporte.html" class="nav-item">Chat en Línea con Soporte</a>
-            <a href="ticket-reclamos.html" class="nav-item">Gestión de Tickets</a>
-            <a href="encuesta-satisfaccion.html" class="nav-item">Encuesta de Satisfacción</a>
+            <a href="chat-soporte.html" class="nav-item">Chat en Linea con Soporte</a>
+            <a href="ticket-reclamos.html" class="nav-item">Gestion de Tickets</a>
+            <a href="encuesta-satisfaccion.html" class="nav-item">Encuesta de Satisfaccion</a>
           </div>
         </div>
 
-        <!-- Marketing y Fidelización -->
+        <!-- Marketing y Fidelizacion -->
         <div class="nav-category">
           <div class="category-header" onclick="toggleCategory('marketing')">
-            <span>🎯 Marketing y Fidelización</span>
+            <span>Marketing y Fidelizacion</span>
             <span class="category-icon">▼</span>
           </div>
           <div class="nav-items" id="marketing">
             <a href="sistema-puntos.html" class="nav-item">Sistema de Puntos</a>
             <a href="promociones-personalizadas.html" class="nav-item">Promociones Personalizadas</a>
-            <a href="envio-ofertas.html" class="nav-item">Envío de Ofertas Masivas</a>
+            <a href="envio-ofertas.html" class="nav-item">Envio de Ofertas Masivas</a>
             <a href="opiniones-clientes.html" class="nav-item">Opiniones de Clientes</a>
           </div>
         </div>
 
-        <!-- Análisis y Gestión Interna -->
+        <!-- Analisis y Gestion Interna -->
         <div class="nav-category">
           <div class="category-header" onclick="toggleCategory('analisis')">
-            <span>📊 Análisis y Gestión Interna</span>
+            <span>Analisis y Gestion Interna</span>
             <span class="category-icon">▼</span>
           </div>
           <div class="nav-items" id="analisis">
-            <a href="panel-metricas.html" class="nav-item">Panel de Métricas</a>
+            <a href="panel-metricas.html" class="nav-item">Panel de Metricas</a>
             <a href="reporte-ventas.html" class="nav-item">Reporte de Ventas</a>
             <a href="respaldo-datos.html" class="nav-item">Respaldo de Datos</a>
           </div>
@@ -94,24 +306,23 @@
       </div>
     </nav>
 
-    <!-- CONTENIDO PRINCIPAL -->
     <main class="main-content">
       <div class="welcome-section">
-        <h1 class="welcome-title">¡Bienvenido/a a la Heladería!</h1>
-        <p class="welcome-subtitle">¿Qué quieres hacer hoy?</p>
+        <h1 class="welcome-title">¡Bienvenido/a a la Heladeria!</h1>
+        <p class="welcome-subtitle">¿Que quieres hacer hoy?</p>
       </div>
 
       <div class="quick-actions">
         <div class="action-card" onclick="window.location.href='catalogo-productos.html'">
           <div class="action-icon">🛒</div>
           <h3 class="action-title">Hacer un Pedido</h3>
-          <p class="action-description">Explora nuestro catálogo y ordena tus helados favoritos</p>
+          <p class="action-description">Explora nuestro catalogo y ordena tus helados favoritos</p>
         </div>
 
         <div class="action-card" onclick="window.location.href='seguimiento-tiempo-real.html'">
           <div class="action-icon">📱</div>
           <h3 class="action-title">Seguir Mi Pedido</h3>
-          <p class="action-description">Revisa el estado y ubicación de tu pedido en tiempo real</p>
+          <p class="action-description">Revisa el estado y ubicacion de tu pedido en tiempo real</p>
         </div>
 
         <div class="action-card" onclick="window.location.href='sistema-puntos.html'">
@@ -133,7 +344,6 @@
     function toggleCategory(categoryId) {
       const category = document.getElementById(categoryId);
       const header = category.previousElementSibling;
-      
       category.classList.toggle('expanded');
       header.classList.toggle('active');
     }
