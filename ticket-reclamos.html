@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Tickets - Frío Natural</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* VARIABLES DE COLOR - Tema Rosa Heladería */
+        :root {
+            --color-primary: #ff69b4;
+            --color-secondary: #ff85a1;
+            --color-accent: #ffd166;
+            --color-background: #ffffff;
+            --color-text-dark: #333333;
+            --color-text-light: #ffffff;
+            --color-success: #4CAF50;
+            --color-warning: #ff9800;
+            --color-error: #f44336;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #ffccd5 0%, #c9e9ff 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* BOTÓN DE REGRESO */
+        .back-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 100;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .back-button:hover {
+            background: white;
+            transform: translateX(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+        }
+        
+        .back-button i {
+            color: var(--color-primary);
+            font-size: 18px;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            width: 90%;
+            max-width: 500px;
+            margin-top: 60px;
+        }
+
+        .panel {
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .panel:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Bloque principal del título */
+        .ticket-header {
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+            color: var(--color-text-light);
+            border-left: 5px solid var(--color-accent);
+            text-align: center;
+        }
+        
+        .ticket-header h2 {
+            margin: 0;
+            font-size: 1.8em;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+        }
+
+        .subtitulo-ticket {
+            margin: 10px 0 0 0;
+            opacity: 0.9;
+            font-size: 1em;
+        }
+
+        /* Bloque de Información */
+        .ticket-info {
+            background: var(--color-background);
+            border: 2px solid var(--color-secondary);
+            padding: 25px;
+        }
+        
+        .ticket-info strong {
+            color: var(--color-primary);
+            display: block;
+            margin-bottom: 5px;
+            font-size: 1.1em;
+        }
+        
+        .ticket-info p {
+            margin: 0 0 15px 0;
+            padding: 12px;
+            background: rgba(255, 105, 180, 0.05);
+            border-radius: 8px;
+            border-left: 3px solid var(--color-primary);
+        }
+
+        .ticket-info p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Bloque de Botón */
+        .ticket-accion {
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+            padding: 25px;
+            text-align: center;
+        }
+        
+        .ticket-accion button {
+            padding: 15px 30px;
+            background: var(--color-background);
+            color: var(--color-primary);
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1.2em;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            width: 100%;
+        }
+
+        .ticket-accion button:hover {
+            background: var(--color-accent);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 18px rgba(255, 209, 102, 0.4);
+        }
+
+        /* Panel de Ejemplo / Log */
+        .ticket-log {
+            background: var(--color-accent);
+            color: var(--color-text-dark);
+            border: 2px solid #ffc145;
+            font-size: 0.95em;
+            padding: 25px;
+            border-radius: 15px;
+        }
+        
+        .ticket-log h4 {
+            margin-top: 0;
+            color: var(--color-primary);
+            font-size: 1.2em;
+            text-align: center;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .ejemplo-item {
+            margin-bottom: 15px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            border-left: 3px solid var(--color-primary);
+        }
+
+        .ejemplo-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .ejemplo-label {
+            font-weight: bold;
+            color: var(--color-primary);
+            margin-right: 8px;
+        }
+
+        /* Mensaje de Éxito */
+        .ticket-exitoso {
+            background: rgba(76, 175, 80, 0.1);
+            color: #2e7d32;
+            border: 2px solid var(--color-success);
+            font-weight: bold;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        /* Mensaje de Error */
+        .error-ticket {
+            background: rgba(244, 67, 54, 0.1);
+            color: #c62828;
+            border: 2px solid var(--color-error);
+            font-weight: bold;
+            text-align: center;
+            padding: 20px;
+        }
+
+        /* Estados dinámicos */
+        .mensaje-oculto {
+            display: none;
+        }
+
+        .animacion-ticket {
+            animation: ticketPulse 2s ease-in-out;
+        }
+
+        @keyframes ticketPulse {
+            0% { transform: scale(0.95); opacity: 0.7; }
+            50% { transform: scale(1.02); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* Formulario de ticket (oculto inicialmente) */
+        .formulario-ticket {
+            background: var(--color-background);
+            border: 2px solid var(--color-secondary);
+            padding: 25px;
+            border-radius: 15px;
+            display: none;
+        }
+
+        .formulario-ticket h3 {
+            color: var(--color-primary);
+            margin-top: 0;
+            text-align: center;
+        }
+
+        .campo-formulario {
+            margin-bottom: 20px;
+        }
+
+        .campo-formulario label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--color-primary);
+            font-weight: bold;
+        }
+
+        .campo-formulario input,
+        .campo-formulario textarea,
+        .campo-formulario select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid var(--color-secondary);
+            border-radius: 8px;
+            font-size: 1em;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+        }
+
+        .campo-formulario input:focus,
+        .campo-formulario textarea:focus,
+        .campo-formulario select:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 3px rgba(255, 105, 180, 0.2);
+        }
+
+        .campo-formulario textarea {
+            height: 100px;
+            resize: vertical;
+        }
+
+        .botones-formulario {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .botones-formulario button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-enviar {
+            background: var(--color-primary);
+            color: var(--color-text-light);
+        }
+
+        .btn-enviar:hover {
+            background: var(--color-secondary);
+            transform: translateY(-2px);
+        }
+
+        .btn-cancelar {
+            background: var(--color-error);
+            color: var(--color-text-light);
+        }
+
+        .btn-cancelar:hover {
+            background: #d32f2f;
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                width: 95%;
+            }
+            
+            .back-button {
+                top: 15px;
+                left: 15px;
+                width: 40px;
+                height: 40px;
+            }
+            
+            .panel {
+                padding: 20px;
+            }
+            
+            .ticket-accion button {
+                font-size: 1.1em;
+                padding: 12px 20px;
+            }
+            
+            .botones-formulario {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <button class="back-button" id="backButton">
+        <i class="fas fa-arrow-left"></i>
+    </button>
+
+    <div class="container">
+
+        <div class="panel ticket-header">
+            <h2>🎫 Gestión de Tickets</h2>
+            <p class="subtitulo-ticket">Reporta problemas y haz seguimiento de tus reclamos</p>
+        </div>
+
+        <div class="panel ticket-info">
+            <strong>📋 Propósito:</strong>
+            <p>Reportar problemas con pedidos, productos o servicios y realizar seguimiento hasta su resolución.</p>
+            
+            <strong>📥 Entradas:</strong>
+            <p>Descripción detallada del problema, información del usuario, categoría del reclamo.</p>
+            
+            <strong>📤 Salidas:</strong>
+            <p>Ticket con número único de seguimiento, estado de progreso, historial de actualizaciones.</p>
+            
+            <strong>⚡ Restricciones:</strong>
+            <p>Sistema de soporte activo durante horario comercial (8:00 - 20:00).</p>
+        </div>
+
+        <div class="panel ticket-accion">
+            <button id="btnCrearTicket">
+                <i class="fas fa-plus-circle"></i> Crear Nuevo Ticket
+            </button>
+        </div>
+
+        <div class="panel formulario-ticket" id="formularioTicket">
+            <h3><i class="fas fa-ticket-alt"></i> Nuevo Ticket de Soporte</h3>
+            
+            <div class="campo-formulario">
+                <label for="categoria"><i class="fas fa-tag"></i> Categoría del problema:</label>
+                <select id="categoria">
+                    <option value="">Selecciona una categoría</option>
+                    <option value="pedido">Problema con pedido</option>
+                    <option value="pago">Problema de pago</option>
+                    <option value="producto">Producto defectuoso</option>
+                    <option value="entrega">Problema de entrega</option>
+                    <option value="general">Consulta general</option>
+                </select>
+            </div>
+
+            <div class="campo-formulario">
+                <label for="asunto"><i class="fas fa-heading"></i> Asunto:</label>
+                <input type="text" id="asunto" placeholder="Describe brevemente el problema">
+            </div>
+
+            <div class="campo-formulario">
+                <label for="descripcion"><i class="fas fa-file-alt"></i> Descripción detallada:</label>
+                <textarea id="descripcion" placeholder="Describe el problema en detalle..."></textarea>
+            </div>
+
+            <div class="botones-formulario">
+                <button class="btn-enviar" id="btnEnviarTicket">
+                    <i class="fas fa-paper-plane"></i> Enviar Ticket
+                </button>
+                <button class="btn-cancelar" id="btnCancelarTicket">
+                    <i class="fas fa-times"></i> Cancelar
+                </button>
+            </div>
+        </div>
+        
+        <div class="panel ticket-exitoso mensaje-oculto" id="ticketExitoso">
+            <i class="fas fa-check-circle"></i>
+            <p style="margin: 10px 0 5px 0;">Ticket creado exitosamente</p>
+            <p style="margin: 0; font-size: 0.9em; opacity: 0.8;" id="numeroTicket"></p>
+        </div>
+
+        <div class="panel error-ticket mensaje-oculto" id="errorTicket">
+            <i class="fas fa-exclamation-triangle"></i>
+            <p style="margin: 10px 0 5px 0;">Error al generar el ticket</p>
+            <p style="margin: 0; font-size: 0.9em; opacity: 0.8;">Por favor intenta nuevamente</p>
+        </div>
+        
+        <div class="panel ticket-log">
+            <h4><i class="fas fa-clipboard-list"></i> Ejemplo de Ticket Generado</h4>
+            <div class="ejemplo-item">
+                <span class="ejemplo-label">Usuario:</span> María González
+            </div>
+            <div class="ejemplo-item">
+                <span class="ejemplo-label">Problema:</span> Pedido incompleto - Falta un helado
+            </div>
+            <div class="ejemplo-item">
+                <span class="ejemplo-label">Ticket:</span> #TICKET-20251007-001
+            </div>
+            <div class="ejemplo-item">
+                <span class="ejemplo-label">Estado:</span> <span style="color: var(--color-warning);">Pendiente de revisión</span>
+            </div>
+        </div>
+        
+    </div>
+
+    <script>
+        // Función para el botón de regreso
+        document.getElementById('backButton').addEventListener('click', function() {
+            window.location.href = 'dashboard.html';
+        });
+
+        // Elementos del DOM
+        const btnCrearTicket = document.getElementById('btnCrearTicket');
+        const formularioTicket = document.getElementById('formularioTicket');
+        const ticketExitoso = document.getElementById('ticketExitoso');
+        const errorTicket = document.getElementById('errorTicket');
+        const btnEnviarTicket = document.getElementById('btnEnviarTicket');
+        const btnCancelarTicket = document.getElementById('btnCancelarTicket');
+        const numeroTicket = document.getElementById('numeroTicket');
+
+        // Mostrar formulario al hacer clic en "Crear Ticket"
+        btnCrearTicket.addEventListener('click', function() {
+            formularioTicket.style.display = 'block';
+            ticketExitoso.style.display = 'none';
+            errorTicket.style.display = 'none';
+            
+            // Desplazarse suavemente al formulario
+            formularioTicket.scrollIntoView({ behavior: 'smooth' });
+        });
+
+        // Cancelar creación de ticket
+        btnCancelarTicket.addEventListener('click', function() {
+            formularioTicket.style.display = 'none';
+            // Limpiar formulario
+            document.getElementById('categoria').value = '';
+            document.getElementById('asunto').value = '';
+            document.getElementById('descripcion').value = '';
+        });
+
+        // Enviar ticket
+        btnEnviarTicket.addEventListener('click', function() {
+            const categoria = document.getElementById('categoria').value;
+            const asunto = document.getElementById('asunto').value;
+            const descripcion = document.getElementById('descripcion').value;
+
+            // Validación básica
+            if (!categoria || !asunto || !descripcion) {
+                alert('Por favor completa todos los campos del formulario.');
+                return;
+            }
+
+            // Cambiar estado del botón
+            const textoOriginal = btnEnviarTicket.innerHTML;
+            btnEnviarTicket.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Procesando...';
+            btnEnviarTicket.disabled = true;
+
+            // Simular envío del ticket
+            setTimeout(() => {
+                // 85% de éxito, 15% de fallo
+                const exito = Math.random() > 0.15;
+                
+                if (exito) {
+                    // Ticket creado exitosamente
+                    formularioTicket.style.display = 'none';
+                    ticketExitoso.style.display = 'block';
+                    ticketExitoso.classList.add('animacion-ticket');
+                    errorTicket.style.display = 'none';
+                    
+                    // Generar número de ticket único
+                    const fecha = new Date();
+                    const numero = 'TICKET-' + fecha.getFullYear() + 
+                                 String(fecha.getMonth() + 1).padStart(2, '0') +
+                                 String(fecha.getDate()).padStart(2, '0') + '-' +
+                                 String(Math.floor(Math.random() * 1000)).padStart(3, '0');
+                    
+                    numeroTicket.textContent = 'Número de seguimiento: ' + numero;
+                    
+                    // Limpiar formulario
+                    document.getElementById('categoria').value = '';
+                    document.getElementById('asunto').value = '';
+                    document.getElementById('descripcion').value = '';
+                } else {
+                    // Error al crear ticket
+                    formularioTicket.style.display = 'none';
+                    ticketExitoso.style.display = 'none';
+                    errorTicket.style.display = 'block';
+                    errorTicket.classList.add('animacion-ticket');
+                }
+                
+                // Rehabilitar botón
+                btnEnviarTicket.innerHTML = textoOriginal;
+                btnEnviarTicket.disabled = false;
+                
+                // Remover animaciones después de 3 segundos
+                setTimeout(() => {
+                    ticketExitoso.classList.remove('animacion-ticket');
+                    errorTicket.classList.remove('animacion-ticket');
+                }, 3000);
+                
+            }, 2000);
+        });
+
+        // Permitir enviar formulario con Enter
+        document.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && formularioTicket.style.display === 'block') {
+                btnEnviarTicket.click();
+            }
+        });
+    </script>
+</body>
+</html>
