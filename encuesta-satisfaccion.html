@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Encuesta de Satisfacción - Frío Natural</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* VARIABLES DE COLOR - Tema Rosa Heladería */
+        :root {
+            --color-primary: #ff69b4;
+            --color-secondary: #ff85a1;
+            --color-accent: #ffd166;
+            --color-background: #ffffff;
+            --color-text-dark: #333333;
+            --color-text-light: #ffffff;
+            --color-success: #4CAF50;
+            --color-warning: #ff9800;
+            --color-error: #f44336;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #ffccd5 0%, #c9e9ff 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* BOTÓN DE REGRESO */
+        .back-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 100;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .back-button:hover {
+            background: white;
+            transform: translateX(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+        }
+        
+        .back-button i {
+            color: var(--color-primary);
+            font-size: 18px;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            width: 90%;
+            max-width: 500px;
+            margin-top: 60px;
+        }
+
+        .panel {
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .panel:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Bloque principal del título */
+        .encuesta-header {
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+            color: var(--color-text-light);
+            border-left: 5px solid var(--color-accent);
+            text-align: center;
+        }
+        
+        .encuesta-header h2 {
+            margin: 0;
+            font-size: 1.8em;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+        }
+
+        .subtitulo-encuesta {
+            margin: 10px 0 0 0;
+            opacity: 0.9;
+            font-size: 1em;
+        }
+
+        /* Bloque de Información */
+        .encuesta-info {
+            background: var(--color-background);
+            border: 2px solid var(--color-secondary);
+            padding: 25px;
+        }
+        
+        .encuesta-info strong {
+            color: var(--color-primary);
+            display: block;
+            margin-bottom: 5px;
+            font-size: 1.1em;
+        }
+        
+        .encuesta-info p {
+            margin: 0 0 15px 0;
+            padding: 12px;
+            background: rgba(255, 105, 180, 0.05);
+            border-radius: 8px;
+            border-left: 3px solid var(--color-primary);
+        }
+
+        .encuesta-info p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Bloque de Botón */
+        .encuesta-accion {
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+            padding: 25px;
+            text-align: center;
+        }
+        
+        .encuesta-accion button {
+            padding: 15px 30px;
+            background: var(--color-background);
+            color: var(--color-primary);
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1.2em;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            width: 100%;
+        }
+
+        .encuesta-accion button:hover {
+            background: var(--color-accent);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 18px rgba(255, 209, 102, 0.4);
+        }
+
+        /* Panel de Ejemplo */
+        .encuesta-log {
+            background: var(--color-accent);
+            color: var(--color-text-dark);
+            border: 2px solid #ffc145;
+            font-size: 0.95em;
+            padding: 25px;
+            border-radius: 15px;
+        }
+        
+        .encuesta-log h4 {
+            margin-top: 0;
+            color: var(--color-primary);
+            font-size: 1.2em;
+            text-align: center;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .ejemplo-item {
+            margin-bottom: 15px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            border-left: 3px solid var(--color-primary);
+        }
+
+        .ejemplo-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .ejemplo-label {
+            font-weight: bold;
+            color: var(--color-primary);
+            margin-right: 8px;
+        }
+
+        /* Mensaje de Éxito */
+        .encuesta-exitosa {
+            background: rgba(76, 175, 80, 0.1);
+            color: #2e7d32;
+            border: 2px solid var(--color-success);
+            font-weight: bold;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        /* Mensaje de Error */
+        .error-encuesta {
+            background: rgba(244, 67, 54, 0.1);
+            color: #c62828;
+            border: 2px solid var(--color-error);
+            font-weight: bold;
+            text-align: center;
+            padding: 20px;
+        }
+
+        /* Estados dinámicos */
+        .mensaje-oculto {
+            display: none;
+        }
+
+        .animacion-encuesta {
+            animation: encuestaPulse 2s ease-in-out;
+        }
+
+        @keyframes encuestaPulse {
+            0% { transform: scale(0.95); opacity: 0.7; }
+            50% { transform: scale(1.02); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* Formulario de encuesta (oculto inicialmente) */
+        .formulario-encuesta {
+            background: var(--color-background);
+            border: 2px solid var(--color-secondary);
+            padding: 25px;
+            border-radius: 15px;
+            display: none;
+        }
+
+        .formulario-encuesta h3 {
+            color: var(--color-primary);
+            margin-top: 0;
+            text-align: center;
+        }
+
+        .pregunta-encuesta {
+            margin-bottom: 25px;
+            padding: 20px;
+            background: rgba(255, 105, 180, 0.05);
+            border-radius: 10px;
+            border-left: 3px solid var(--color-primary);
+        }
+
+        .pregunta-encuesta h4 {
+            margin: 0 0 15px 0;
+            color: var(--color-primary);
+            font-size: 1.1em;
+        }
+
+        .opciones-calificacion {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .opcion-calificacion {
+            flex: 1;
+            min-width: 60px;
+            text-align: center;
+        }
+
+        .opcion-calificacion input {
+            display: none;
+        }
+
+        .opcion-calificacion label {
+            display: block;
+            padding: 10px 5px;
+            background: rgba(255, 105, 180, 0.1);
+            border: 2px solid var(--color-secondary);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .opcion-calificacion input:checked + label {
+            background: var(--color-primary);
+            color: var(--color-text-light);
+            border-color: var(--color-primary);
+            transform: translateY(-2px);
+        }
+
+        .opcion-calificacion label:hover {
+            background: rgba(255, 105, 180, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .campo-comentarios {
+            margin-top: 20px;
+        }
+
+        .campo-comentarios label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--color-primary);
+            font-weight: bold;
+        }
+
+        .campo-comentarios textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid var(--color-secondary);
+            border-radius: 8px;
+            font-size: 1em;
+            transition: all 0.3s ease;
+            box-sizing: border-box;
+            height: 80px;
+            resize: vertical;
+        }
+
+        .campo-comentarios textarea:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 3px rgba(255, 105, 180, 0.2);
+        }
+
+        .botones-formulario {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .botones-formulario button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-enviar {
+            background: var(--color-primary);
+            color: var(--color-text-light);
+        }
+
+        .btn-enviar:hover {
+            background: var(--color-secondary);
+            transform: translateY(-2px);
+        }
+
+        .btn-cancelar {
+            background: var(--color-error);
+            color: var(--color-text-light);
+        }
+
+        .btn-cancelar:hover {
+            background: #d32f2f;
+            transform: translateY(-2px);
+        }
+
+        /* Indicadores de calificación */
+        .calificacion-texto {
+            text-align: center;
+            margin-top: 5px;
+            font-size: 0.8em;
+            color: var(--color-text-dark);
+            opacity: 0.7;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                width: 95%;
+            }
+            
+            .back-button {
+                top: 15px;
+                left: 15px;
+                width: 40px;
+                height: 40px;
+            }
+            
+            .panel {
+                padding: 20px;
+            }
+            
+            .encuesta-accion button {
+                font-size: 1.1em;
+                padding: 12px 20px;
+            }
+            
+            .botones-formulario {
+                flex-direction: column;
+            }
+            
+            .opciones-calificacion {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <button class="back-button" id="backButton">
+        <i class="fas fa-arrow-left"></i>
+    </button>
+
+    <div class="container">
+
+        <div class="panel encuesta-header">
+            <h2>📊 Encuesta de Satisfacción</h2>
+            <p class="subtitulo-encuesta">Tu opinión nos ayuda a mejorar nuestro servicio</p>
+        </div>
+
+        <div class="panel encuesta-info">
+            <strong>🎯 Propósito:</strong>
+            <p>Recoger retroalimentación valiosa de nuestros clientes para mejorar continuamente nuestros productos y servicios.</p>
+            
+            <strong>📥 Entradas:</strong>
+            <p>Preguntas de encuesta sobre experiencia del cliente, calificaciones y comentarios opcionales.</p>
+            
+            <strong>📤 Salidas:</strong>
+            <p>Respuestas almacenadas en el sistema, reportes de satisfacción y métricas de calidad.</p>
+            
+            <strong>⚡ Restricciones:</strong>
+            <p>Conexión activa al sistema de encuestas. Disponible 24/7 para clientes registrados.</p>
+        </div>
+
+        <div class="panel encuesta-accion">
+            <button id="btnRecibirEncuesta">
+                <i class="fas fa-poll"></i> Completar Encuesta
+            </button>
+        </div>
+
+        <div class="panel formulario-encuesta" id="formularioEncuesta">
+            <h3><i class="fas fa-clipboard-check"></i> Encuesta de Satisfacción</h3>
+            
+            <div class="pregunta-encuesta">
+                <h4><i class="fas fa-shopping-bag"></i> ¿Cómo calificarías tu experiencia de compra general?</h4>
+                <div class="opciones-calificacion">
+                    <div class="opcion-calificacion">
+                        <input type="radio" id="calificacion1" name="experiencia" value="1">
+                        <label for="calificacion1">1</label>
+                        <div class="calificacion-texto">Muy mala</div>
+                    </div>
+                    <div class="opcion-calificacion">
+                        <input type="radio" id="calificacion2" name="experiencia" value="2">
+                        <label for="calificacion2">2</label>
+                        <div class="calificacion-texto">Mala</div>
+                    </div>
+                    <div class="opcion-calificacion">
+                        <input type="radio" id="calificacion3" name="experiencia" value="3">
+                        <label for="calificacion3">3</label>
+                        <div class="calificacion-texto">Regular</div>
+                    </div>
+                    <div class="opcion-calificacion">
+                        <input type="radio" id="calificacion4" name="experiencia" value="4">
+                        <label for="calificacion4">4</label>
+                        <div class="calificacion-texto">Buena</div>
+                    </div>
+                    <div class="opcion-calificacion">
+                        <input type="radio" id="calificacion5" name="experiencia" value="5">
+                        <label for="calificacion5">5</label>
+                        <div class="calificacion-texto">Excelente</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pregunta-encuesta">
+                <h4><i class="fas fa-ice-cream"></i> ¿Qué tan satisfecho estás con la calidad de nuestros helados?</h4>
+                <div class="opciones-calificacion">
+                    <div class="opcion-calificacion">
+                        <input type="radio" id="calidad1" name="calidad" value="1">
+                        <label for="calidad1">1</label>
+                    </div>
+                    <div class="opcion-calificacion">
+                        <input type="radio" id="calidad2" name="calidad" value="2">
+                        <label for="calidad2">2</label>
+                    </div>
+                    <div class="opcion-calificacion">
+                        <input type="radio" id="calidad3" name="calidad" value="3">
+                        <label for="calidad3">3</label>
+                    </div>
+                    <div class="opcion-calificacion">
+                        <input type="radio" id="calidad4" name="calidad" value="4">
+                        <label for="calidad4">4</label>
+                    </div>
+                    <div class="opcion-calificacion">
+                        <input type="radio" id="calidad5" name="calidad" value="5">
+                        <label for="calidad5">5</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pregunta-encuesta">
+                <h4><i class="fas fa-shipping-fast"></i> ¿Cómo calificarías nuestro servicio de entrega?</h4>
+                <div class="opciones-calificacion">
+                    <div class="opcion-calificacion">
+                        <input type="radio" id="entrega1" name="entrega" value="1">
+                        <label for="entrega1">1</label>
+                    </div>
+                    <div class="opcion-calificacion">
+                        <input type="radio" id="entrega2" name="entrega" value="2">
+                        <label for="entrega2">2</label>
+                    </div>
+                    <div class="opcion-calificacion">
+                        <input type="radio" id="entrega3" name="entrega" value="3">
+                        <label for="entrega3">3</label>
+                    </div>
+                    <div class="opcion-calificacion">
+                        <input type="radio" id="entrega4" name="entrega" value="4">
+                        <label for="entrega4">4</label>
+                    </div>
+                    <div class="opcion-calificacion">
+                        <input type="radio" id="entrega5" name="entrega" value="5">
+                        <label for="entrega5">5</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="campo-comentarios">
+                <label for="comentarios"><i class="fas fa-comment"></i> Comentarios adicionales (opcional):</label>
+                <textarea id="comentarios" placeholder="¿Tienes alguna sugerencia o comentario adicional que quieras compartir con nosotros?"></textarea>
+            </div>
+
+            <div class="botones-formulario">
+                <button class="btn-enviar" id="btnEnviarEncuesta">
+                    <i class="fas fa-paper-plane"></i> Enviar Encuesta
+                </button>
+                <button class="btn-cancelar" id="btnCancelarEncuesta">
+                    <i class="fas fa-times"></i> Cancelar
+                </button>
+            </div>
+        </div>
+        
+        <div class="panel encuesta-exitosa mensaje-oculto" id="encuestaExitosa">
+            <i class="fas fa-check-circle"></i>
+            <p style="margin: 10px 0 5px 0;">¡Encuesta completada exitosamente!</p>
+            <p style="margin: 0; font-size: 0.9em; opacity: 0.8;">Gracias por tu valiosa retroalimentación</p>
+        </div>
+
+        <div class="panel error-encuesta mensaje-oculto" id="errorEncuesta">
+            <i class="fas fa-exclamation-triangle"></i>
+            <p style="margin: 10px 0 5px 0;">Error al registrar la encuesta</p>
+            <p style="margin: 0; font-size: 0.9em; opacity: 0.8;">Por favor intenta nuevamente</p>
+        </div>
+        
+        <div class="panel encuesta-log">
+            <h4><i class="fas fa-chart-bar"></i> Ejemplo de Encuesta Completada</h4>
+            <div class="ejemplo-item">
+                <span class="ejemplo-label">Encuesta:</span> Satisfacción Post-Compra #00123
+            </div>
+            <div class="ejemplo-item">
+                <span class="ejemplo-label">Calificación General:</span> ⭐⭐⭐⭐⭐ (5/5)
+            </div>
+            <div class="ejemplo-item">
+                <span class="ejemplo-label">Estado:</span> <span style="color: var(--color-success);">Completada y registrada</span>
+            </div>
+            <div class="ejemplo-item">
+                <span class="ejemplo-label">Resultado:</span> Respuestas almacenadas en base de datos para análisis
+            </div>
+        </div>
+        
+    </div>
+
+    <script>
+        // Función para el botón de regreso
+        document.getElementById('backButton').addEventListener('click', function() {
+            window.location.href = 'dashboard.html';
+        });
+
+        // Elementos del DOM
+        const btnRecibirEncuesta = document.getElementById('btnRecibirEncuesta');
+        const formularioEncuesta = document.getElementById('formularioEncuesta');
+        const encuestaExitosa = document.getElementById('encuestaExitosa');
+        const errorEncuesta = document.getElementById('errorEncuesta');
+        const btnEnviarEncuesta = document.getElementById('btnEnviarEncuesta');
+        const btnCancelarEncuesta = document.getElementById('btnCancelarEncuesta');
+
+        // Mostrar formulario al hacer clic en "Completar Encuesta"
+        btnRecibirEncuesta.addEventListener('click', function() {
+            formularioEncuesta.style.display = 'block';
+            encuestaExitosa.style.display = 'none';
+            errorEncuesta.style.display = 'none';
+            
+            // Desplazarse suavemente al formulario
+            formularioEncuesta.scrollIntoView({ behavior: 'smooth' });
+        });
+
+        // Cancelar encuesta
+        btnCancelarEncuesta.addEventListener('click', function() {
+            formularioEncuesta.style.display = 'none';
+            // Limpiar formulario
+            const radios = document.querySelectorAll('input[type="radio"]');
+            radios.forEach(radio => radio.checked = false);
+            document.getElementById('comentarios').value = '';
+        });
+
+        // Enviar encuesta
+        btnEnviarEncuesta.addEventListener('click', function() {
+            const experiencia = document.querySelector('input[name="experiencia"]:checked');
+            const calidad = document.querySelector('input[name="calidad"]:checked');
+            const entrega = document.querySelector('input[name="entrega"]:checked');
+
+            // Validación básica
+            if (!experiencia || !calidad || !entrega) {
+                alert('Por favor responde todas las preguntas de la encuesta.');
+                return;
+            }
+
+            // Cambiar estado del botón
+            const textoOriginal = btnEnviarEncuesta.innerHTML;
+            btnEnviarEncuesta.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Procesando...';
+            btnEnviarEncuesta.disabled = true;
+
+            // Simular envío de la encuesta
+            setTimeout(() => {
+                // 90% de éxito, 10% de fallo
+                const exito = Math.random() > 0.1;
+                
+                if (exito) {
+                    // Encuesta enviada exitosamente
+                    formularioEncuesta.style.display = 'none';
+                    encuestaExitosa.style.display = 'block';
+                    encuestaExitosa.classList.add('animacion-encuesta');
+                    errorEncuesta.style.display = 'none';
+                    
+                    // Limpiar formulario
+                    const radios = document.querySelectorAll('input[type="radio"]');
+                    radios.forEach(radio => radio.checked = false);
+                    document.getElementById('comentarios').value = '';
+                } else {
+                    // Error al enviar encuesta
+                    formularioEncuesta.style.display = 'none';
+                    encuestaExitosa.style.display = 'none';
+                    errorEncuesta.style.display = 'block';
+                    errorEncuesta.classList.add('animacion-encuesta');
+                }
+                
+                // Rehabilitar botón
+                btnEnviarEncuesta.innerHTML = textoOriginal;
+                btnEnviarEncuesta.disabled = false;
+                
+                // Remover animaciones después de 3 segundos
+                setTimeout(() => {
+                    encuestaExitosa.classList.remove('animacion-encuesta');
+                    errorEncuesta.classList.remove('animacion-encuesta');
+                }, 3000);
+                
+            }, 2000);
+        });
+
+        // Efectos visuales para las opciones de calificación
+        const opcionesCalificacion = document.querySelectorAll('.opcion-calificacion label');
+        opcionesCalificacion.forEach(opcion => {
+            opcion.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-3px) scale(1.05)';
+            });
+            
+            opcion.addEventListener('mouseleave', function() {
+                if (!this.previousElementSibling.checked) {
+                    this.style.transform = 'translateY(0) scale(1)';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
